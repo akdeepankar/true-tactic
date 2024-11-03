@@ -8,11 +8,6 @@
     }
   },
   "connections": {
-    "my-dgraph": {
-      "type": "dgraph",
-      "grpcTarget": "https://green-feather-41441502.ap-south-1.aws.cloud.dgraph.io/graphql",
-      "key": "{{YWI2MTZkZjI5ZmRiM2YyZDg1NDJkOTdlN2JhZjI0NmM=}}"
-    },
     "zenquotes": {
       "type": "http",
       "baseUrl": "https://zenquotes.io/"
@@ -20,7 +15,7 @@
   },
   "models": {
     "text-generator": {
-      "sourceModel": "meta-llama/Llama-3.1-8B-Instruct", 
+      "sourceModel": "meta-llama/Meta-Llama-3.1-8B-Instruct", 
       "provider": "hugging-face", 
       "connection": "hypermode" 
     }
