@@ -7,6 +7,18 @@
       "auth": "bearer-token"
     }
   },
+  "models": {
+    "text-generator": {
+      "sourceModel": "meta-llama/Meta-Llama-3.1-8B-Instruct", 
+      "provider": "hugging-face", 
+      "connection": "hypermode" 
+    },
+    "gemini-1-5-pro": {
+      "sourceModel": "gemini-1.5-pro",
+      "connection": "google",
+      "path": "v1beta/models/gemini-1.5-pro:generateContent"
+    }
+  },
   "connections": {
     "zenquotes": {
       "type": "http",
@@ -18,18 +30,6 @@
       "headers": {
         "X-goog-api-key": "AIzaSyCA25KPArcjrC0AbT8n8SweiV5ktE_ta0s"
       }
-    }
-  },
-  "models": {
-    "text-generator": {
-      "sourceModel": "meta-llama/Meta-Llama-3.1-8B-Instruct", 
-      "provider": "hugging-face", 
-      "connection": "hypermode" 
-    },
-    "gemini-1-5-pro": {
-      "sourceModel": "gemini-1.5-pro",
-      "provider": "hugging-face",
-      "connection": "hypermode"
     }
   }
 }

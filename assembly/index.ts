@@ -2,18 +2,15 @@ import {http, models} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, ResponseFormat, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
 import { GeminiGenerateModel, UserTextContent, SystemTextContent, GenerationConfig } from "@hypermode/modus-sdk-as/models/gemini/generate";
 
-export function generateTextWithGemini(instruction: string, prompt: string): string {
+export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
   const model = models.getModel<GeminiGenerateModel>("gemini-1-5-pro");
 
   // Create the user text content
   const userContent = new UserTextContent(prompt);
-  
-  // Create the system instruction content
-  const systemContent = new SystemTextContent(instruction);
 
   // Prepare the input for the model
-  const input = model.createInput([userContent, systemContent]);
+  const input = model.createInput([userContent]);
 
   // Invoke the model and get the output
   const output = model.invoke(input);
