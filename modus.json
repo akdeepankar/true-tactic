@@ -11,6 +11,13 @@
     "zenquotes": {
       "type": "http",
       "baseUrl": "https://zenquotes.io/"
+    },
+    "google": {
+      "type": "http",
+      "baseUrl": "https://generativelanguage.googleapis.com/",
+      "headers": {
+        "X-goog-api-key": "AIzaSyCA25KPArcjrC0AbT8n8SweiV5ktE_ta0s"
+      }
     }
   },
   "models": {
@@ -18,6 +25,11 @@
       "sourceModel": "meta-llama/Meta-Llama-3.1-8B-Instruct", 
       "provider": "hugging-face", 
       "connection": "hypermode" 
+    },
+    "gemini-1-5-pro": {
+      "sourceModel": "gemini-1.5-pro",
+      "provider": "hugging-face",
+      "connection": "hypermode"
     }
   }
 }

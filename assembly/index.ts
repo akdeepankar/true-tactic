@@ -1,5 +1,45 @@
 import {http, models} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, ResponseFormat, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
+import { GeminiGenerateModel, UserTextContent, SystemTextContent, GenerationConfig } from "@hypermode/modus-sdk-as/models/gemini/generate";
+
+export function generateTextWithGemini(instruction: string, prompt: string): string {
+  // Retrieve the Gemini Generate model
+  const model = models.getModel<GeminiGenerateModel>("gemini-1-5-pro");
+
+  // Create the user text content
+  const userContent = new UserTextContent(prompt);
+  
+  // Create the system instruction content
+  const systemContent = new SystemTextContent(instruction);
+
+  // Prepare the input for the model
+  const input = model.createInput([userContent, systemContent]);
+
+  // Invoke the model and get the output
+  const output = model.invoke(input);
+
+  // Check if the output has candidates and extract response content
+  if (output && output.candidates.length > 0) {
+    const firstCandidate = output.candidates[0];
+    const responseContent = firstCandidate.content; // Assuming content is an object with parts
+
+    // Check if responseContent is valid and has parts
+    if (responseContent && responseContent.parts.length > 0) {
+      return responseContent.parts[0].text.trim(); // Return the first part's text
+    } else {
+      throw new Error("No response content available.");
+    }
+  } else {
+    throw new Error("No candidates available.");
+  }
+
+  // Default return statement; this should not be reached due to the above logic
+  return "No output generated.";
+}
+
+
+
+
 
 export function generateText(instruction: string, prompt: string): string {
 
