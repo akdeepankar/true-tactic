@@ -1,6 +1,10 @@
 import {http, models} from "@hypermode/modus-sdk-as";
-import {OpenAIChatModel, ResponseFormat, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
-import { GeminiGenerateModel, UserTextContent, SystemTextContent, GenerationConfig } from "@hypermode/modus-sdk-as/models/gemini/generate";
+import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
+import { GeminiGenerateModel, UserTextContent} from "@hypermode/modus-sdk-as/models/gemini/generate";
+
+
+
+
 
 export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
