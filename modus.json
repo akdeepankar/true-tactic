@@ -17,9 +17,22 @@
       "sourceModel": "gemini-1.5-pro",
       "connection": "google",
       "path": "v1beta/models/gemini-1.5-pro:generateContent"
+    },
+    "text-generator2": {
+      "sourceModel": "claude-3-5-sonnet-20240620",
+      "connection": "anthropic",
+      "path": "v1/messages"
     }
   },
   "connections": {
+    "anthropic": {
+      "type": "http",
+      "baseUrl": "https://api.anthropic.com/",
+      "headers": {
+        "x-api-key": "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",
+        "anthropic-version": "2023-06-01"
+      }
+    },
     "zenquotes": {
       "type": "http",
       "baseUrl": "https://zenquotes.io/"
@@ -29,6 +42,18 @@
       "baseUrl": "https://generativelanguage.googleapis.com/",
       "headers": {
         "X-goog-api-key": "AIzaSyCA25KPArcjrC0AbT8n8SweiV5ktE_ta0s"
+      }
+    }
+  },
+  "collections": {
+    "myProducts": {
+      "searchMethods": {
+        "searchMethod": {
+          "embedder": "myEmbedder",
+          "index": {
+            "type": "sequential"
+          }
+        }
       }
     }
   }

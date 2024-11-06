@@ -1,10 +1,38 @@
-import {http, models} from "@hypermode/modus-sdk-as";
+import {collections, http, models} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
 import { GeminiGenerateModel, UserTextContent} from "@hypermode/modus-sdk-as/models/gemini/generate";
+import { Headers } from "@hypermode/modus-sdk-as/assembly/http";
+
+
+export function addProduct(description: string): string {
+  const response = collections.upsert(
+    "myProducts", // Collection name defined in the manifest
+    null, // using null to let Modus generate a unique ID
+    description, // the text to store
+    // no labels for this item
+    // no namespace provided, use defautl namespace
+  )
+  return response.keys[0] // return the identifier of the item
+}
 
 
 
+export function generateText2(instruction: string, prompt: string): string {
 
+  const model = models.getModel<OpenAIChatModel>("text-generator2");
+
+  const input = model.createInput([
+    new UserMessage(prompt),
+    new SystemMessage(instruction)
+  ]
+  );
+
+  input.temperature = 0.7;
+  const output = model.invoke(input);
+  return output.choices[0].message.content.trim();
+
+}
+ 
 
 export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
