@@ -1,7 +1,6 @@
 import {collections, http, models} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
 import { GeminiGenerateModel, UserTextContent} from "@hypermode/modus-sdk-as/models/gemini/generate";
-import { Headers } from "@hypermode/modus-sdk-as/assembly/http";
 
 
 export function addProduct(description: string): string {
