@@ -17,11 +17,6 @@
       "sourceModel": "gemini-1.5-pro",
       "connection": "google",
       "path": "v1beta/models/gemini-1.5-pro:generateContent"
-    },
-    "text-generator2": {
-      "sourceModel": "claude-3-5-sonnet-20240620",
-      "connection": "anthropic",
-      "path": "v1/messages"
     }
   },
   "connections": {
@@ -33,7 +28,7 @@
       "type": "http",
       "baseUrl": "https://generativelanguage.googleapis.com/",
       "headers": {
-        "X-goog-api-key": "AIzaSyCA25KPArcjrC0AbT8n8SweiV5ktE_ta0s"
+        "X-goog-api-key": ""
       }
     }
   },
