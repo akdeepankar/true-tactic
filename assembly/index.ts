@@ -18,34 +18,46 @@ class Book {
   about!: string;
 }
 
-// Function to add a book to the Supabase database
 export function addBookToSupabase(
   title: string,
   author: string,
   category: string
 ): string {
-  // Generate the "about" text for the book using the LLM
-  const about = generateText(
-    "You are a book editor",
-    `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
-  );
+  try {
+    // Generate the "about" text for the book using the LLM
+    const about = generateText(
+      "You are a book editor",
+      `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
+    );
 
-  // SQL statement to insert the new book into Supabase
-  const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
+    if (!about) {
+      throw new Error("Failed to generate book description.");
+    }
 
-  // Create a Params object to hold query parameters
-  const params = new postgresql.Params();
-  params.push(title);
-  params.push(author);
-  params.push(category);
-  params.push(about);
+    // SQL statement to insert the new book into Supabase
+    const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
 
-  // Execute the SQL query to insert the new book
-  const response = postgresql.execute(connection, query, params);
+    // Create a Params object to hold query parameters
+    const params = new postgresql.Params();
+    params.push(title);
+    params.push(author);
+    params.push(category);
+    params.push(about);
 
-  // Return a success message
-  return "Book added successfully!";
+    // Execute the SQL query to insert the new book
+    const response = postgresql.execute(connection, query, params);
+
+    // Check if the insertion was successful
+    if (response) {
+      return "Book added successfully!";
+    } else {
+      throw new Error("Failed to insert book into the database.");
+    }
+  } catch (error) {
+    return `Error`;
+  }
 }
+
 
 
 
