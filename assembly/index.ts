@@ -5,11 +5,9 @@ import { Content, Headers } from "@hypermode/modus-sdk-as/assembly/http";
 import { JSON } from "json-as";
 
 
-
 // the name of the PostgreSQL connection, as specified in the modus.json manifest
 //const connection = "my-database"
 const connection ="library-database"
-
 
 // Function to add a book to the Supabase database
 @json
