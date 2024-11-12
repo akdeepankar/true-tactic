@@ -17,23 +17,15 @@ class Book {
   title!: string;
   author!: string;
   category!: string;
-  //about!: string;
+
 }
 
-// Function to add a book to the Supabase database
 export function addBookToSupabase(
   title: string,
   author: string,
   category: string,
-  //about: string
 ): string {
-  // Generate the "about" text for the book using the LLM
-  //const about = generateText(
-  //  "You are a book editor",
-  //  `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
-  //);
 
-  // SQL statement to insert the new book into Supabase
   const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
 
   // Create a Params object to hold query parameters
@@ -41,7 +33,6 @@ export function addBookToSupabase(
   params.push(title);
   params.push(author);
   params.push(category);
-  //params.push(about);
 
   // Execute the SQL query to insert the new book
   const response = postgresql.execute(connection, query, params);
