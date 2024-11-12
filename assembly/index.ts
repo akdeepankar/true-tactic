@@ -17,7 +17,7 @@ class Book {
   title!: string;
   author!: string;
   category!: string;
-  about!: string;
+  //about!: string;
 }
 
 // Function to add a book to the Supabase database
@@ -34,7 +34,7 @@ export function addBookToSupabase(
   //);
 
   // SQL statement to insert the new book into Supabase
-  const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
+  const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
