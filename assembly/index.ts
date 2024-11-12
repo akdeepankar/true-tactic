@@ -27,11 +27,7 @@ export function addBookToSupabase(
   category: string
 ): string {
   // Generate the "about" text for the book using the LLM
-  const about = generateText(
-    "You are a book editor",
-    `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
-  );
-
+  const about = 'Hello'
 
   // SQL statement to insert the new book into Supabase
   const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
