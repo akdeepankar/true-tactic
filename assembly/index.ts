@@ -52,18 +52,18 @@ export function addBookToSupabase(
 export function addBookToSupabase2(
   title: string,
   author: string,
-  category: string,
+  //category: string,
   //about: string
 ): string {
 
   // SQL statement to insert the new book into Supabase
-  const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
+  const query = 'INSERT INTO "Books" (title, author) VALUES ($1, $2)';
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
   params.push(author);
-  params.push(category);
+  //params.push(category);
   //params.push(about);
 
   // Execute the SQL query to insert the new book
