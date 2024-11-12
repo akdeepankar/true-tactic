@@ -5,9 +5,11 @@ import { Content, Headers } from "@hypermode/modus-sdk-as/assembly/http";
 import { JSON } from "json-as";
 
 
+
 // the name of the PostgreSQL connection, as specified in the modus.json manifest
 //const connection = "my-database"
 const connection ="library-database"
+
 
 // Function to add a book to the Supabase database
 @json
@@ -15,6 +17,7 @@ class Book {
   title!: string;
   author!: string;
   category!: string;
+  //about!: string;
 }
 
 // Function to add a book to the Supabase database
@@ -24,15 +27,20 @@ export function addBookToSupabase(
   category: string
 ): string {
   // Generate the "about" text for the book using the LLM
+  const about = generateText(
+    "You are a book editor",
+    `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
+  );
 
   // SQL statement to insert the new book into Supabase
-  const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
+  const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
   params.push(author);
   params.push(category);
+  params.push(about);
 
   // Execute the SQL query to insert the new book
   const response = postgresql.execute(connection, query, params);
