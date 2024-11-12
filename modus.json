@@ -28,20 +28,16 @@
       "type": "http",
       "baseUrl": "https://generativelanguage.googleapis.com/",
       "headers": {
-        "X-goog-api-key": ""
+        "X-goog-api-key": "AIzaSyCA25KPArcjrC0AbT8n8SweiV5ktE_ta0s"
       }
-    }
-  },
-  "collections": {
-    "myProducts": {
-      "searchMethods": {
-        "searchMethod": {
-          "embedder": "myEmbedder",
-          "index": {
-            "type": "sequential"
-          }
-        }
-      }
+    },
+    "my-database": {
+      "type": "postgresql",
+      "connString": "postgresql://postgres.afbgnnsgeqeochopzpeb:hello89&598&&3@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require"
+    },
+    "library-database": {
+      "type": "postgresql",
+      "connString": "postgresql://postgres.dpgpqoezghwbsfszbokb:hello89&598&&3@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require"
     }
   }
 }

@@ -1,18 +1,92 @@
-import {collections, http, models} from "@hypermode/modus-sdk-as";
+import {http, models, postgresql} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
 import { GeminiGenerateModel, UserTextContent} from "@hypermode/modus-sdk-as/models/gemini/generate";
+import { Content, Headers } from "@hypermode/modus-sdk-as/assembly/http";
+import { JSON } from "json-as";
 
 
-export function addProduct(description: string): string {
-  const response = collections.upsert(
-    "myProducts", // Collection name defined in the manifest
-    null, // using null to let Modus generate a unique ID
-    description, // the text to store
-    // no labels for this item
-    // no namespace provided, use defautl namespace
-  )
-  return response.keys[0] // return the identifier of the item
+
+// the name of the PostgreSQL connection, as specified in the modus.json manifest
+//const connection = "my-database"
+const connection ="library-database"
+
+
+// Function to add a book to the Supabase database
+@json
+class Book {
+  title!: string;
+  author!: string;
+  category!: string;
+  about!: string;
 }
+
+// Function to add a book to the Supabase database
+export function addBookToSupabase(
+  title: string,
+  author: string,
+  category: string
+): string {
+  // Generate the "about" text for the book using the LLM
+  const about = generateText(
+    "You are a book editor",
+    `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
+  );
+
+  // SQL statement to insert the new book into Supabase
+  const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(title);
+  params.push(author);
+  params.push(category);
+  params.push(about);
+
+  // Execute the SQL query to insert the new book
+  const response = postgresql.execute(connection, query, params);
+
+  // Return a success message
+  return "Book added successfully!";
+}
+
+
+
+
+
+@json
+class Person {
+  name!: string
+  age!: i32
+}
+
+export function getPerson(name: string): Person {
+  const query = "select * from persons where name = $1"
+
+  const params = new postgresql.Params()
+  params.push(name)
+
+  const response = postgresql.query<Person>(connection, query, params)
+  return response.rows[0]
+}
+
+// Function to add a new person to the database
+export function addPerson(name: string, age: i32): string {
+  // SQL statement for inserting a new person
+  const query = "INSERT INTO persons (name, age) VALUES ($1, $2)"
+  
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params()
+  params.push(name)
+  params.push(age)
+
+  // Execute the insert statement
+  const response = postgresql.execute(connection, query, params)
+
+  return "Person added successfully"
+}
+
+
+
 
 
 
