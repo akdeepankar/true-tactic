@@ -32,6 +32,7 @@ export function addBookToSupabase(
     `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
   );
 
+
   // SQL statement to insert the new book into Supabase
   const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
 
