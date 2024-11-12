@@ -24,14 +24,37 @@ class Book {
 export function addBookToSupabase(
   title: string,
   author: string,
+  category: string | null = null,
+  //about: string
+): string {
+
+  const bookCategory = category || generateText("Please provide a description of the book in 50 words.", title);
+
+  // SQL statement to insert the new book into Supabase
+  const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(title);
+  params.push(author);
+  params.push(bookCategory);
+  //params.push(about);
+
+  // Execute the SQL query to insert the new book
+  const response = postgresql.execute(connection, query, params);
+
+  // Return a success message
+  return "Book added successfully!";
+}
+
+
+
+export function addBookToSupabase2(
+  title: string,
+  author: string,
   category: string,
   //about: string
 ): string {
-  // Generate the "about" text for the book using the LLM
-  //const about = generateText(
-  //  "You are a book editor",
-  //  `Please write a brief description in a paragraph about this book titled: ${title} by the author ${author}.`
-  //);
 
   // SQL statement to insert the new book into Supabase
   const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
@@ -49,8 +72,6 @@ export function addBookToSupabase(
   // Return a success message
   return "Book added successfully!";
 }
-
-
 
 
 
