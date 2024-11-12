@@ -28,7 +28,7 @@ export function addBookToSupabase(
   about: string
 ): string {
   // Generate the "about" text for the book using the LLM
-  const aboutz = about;
+  //const aboutz = about;
 
   // SQL statement to insert the new book into Supabase
   const query = 'INSERT INTO "Books" (title, author, category, about) VALUES ($1, $2, $3, $4)';
@@ -38,7 +38,7 @@ export function addBookToSupabase(
   params.push(title);
   params.push(author);
   params.push(category);
-  params.push(aboutz);
+  params.push(about);
 
   // Execute the SQL query to insert the new book
   const response = postgresql.execute(connection, query, params);
