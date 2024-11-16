@@ -25,7 +25,7 @@ export function addBookToSupabase(
   author: string,
   category: string,
 ): string {
-
+  
   const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
 
   // Create a Params object to hold query parameters
