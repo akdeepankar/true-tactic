@@ -32,7 +32,7 @@ export function addBookToSupabase(
   const params = new postgresql.Params();
   params.push(title);
   params.push(author);
-  params.push(category);
+  params.push(generateText("A sentence about this book", title + "by" + author));
 
   // Execute the SQL query to insert the new book
   const response = postgresql.execute(connection, query, params);
@@ -79,9 +79,6 @@ export function addPerson(name: string, age: i32): string {
 
 
 
-
-
-
 export function generateText2(instruction: string, prompt: string): string {
 
   const model = models.getModel<OpenAIChatModel>("text-generator2");
@@ -97,7 +94,7 @@ export function generateText2(instruction: string, prompt: string): string {
   return output.choices[0].message.content.trim();
 
 }
- 
+
 
 export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
@@ -174,4 +171,45 @@ export function getRandomQuote(): Quote {
 
 export function sayHello(name: string | null = null): string {
   return `Hello, ${name || "World"}!`;
+}
+
+@json
+class Color {
+  name!: string;
+  hex!: string;
+  requestedHex!: string;
+}
+
+@json
+class ColorResponse {
+  colors!: Color[];
+}
+
+export function fetchColorNames(hexCodes: string[]): string[] {
+  const url = `https://api.color.pizza/v1/?values=${hexCodes.join(",")}`;
+  const request = new http.Request(url);
+  const response = http.fetch(request);
+
+  if (response.ok) {
+    const data = response.json<ColorResponse>();
+
+    // Initialize an empty array for color names
+    const colorNames = new Array<string>();
+
+    // Use a for loop to iterate over the colors array
+    for (let i = 0; i < data.colors.length; i++) {
+      const color = data.colors[i];
+      colorNames.push(color.name);
+    }
+
+    // Check if the array is empty
+    if (colorNames.length === 0) {
+      throw new Error("No colors returned from the API.");
+    }
+
+    // Return only the color names array
+    return colorNames;
+  } else {
+    throw new Error(`Failed to fetch color names: ${response.status} ${response.statusText}`);
+  }
 }
