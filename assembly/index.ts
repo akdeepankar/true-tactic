@@ -23,7 +23,7 @@ class Book {
 export function addBookToSupabase(
   title: string,
   author: string,
-  category: string,
+  //category: string,
 ): string {
   
   const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
