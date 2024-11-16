@@ -61,6 +61,21 @@ export function deleteBookFromSupabase(title: string): string {
 }
 
 
+// Function to query a book's name and category by title
+export function queryBookByTitle(title: string): string {
+  const query = 'SELECT title, category FROM "Books" WHERE title = $1';
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(title);
+
+  // Execute the SQL query to fetch the book details
+  const response = postgresql.query<Book>(connection, query, params);
+
+  return response.rows[0].title + " is in the " + response.rows[0].category + " category.";
+}
+
+
 
 
 
