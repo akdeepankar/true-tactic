@@ -23,16 +23,19 @@ class Book {
 export function addBookToSupabase(
   title: string,
   author: string,
-  //category: string,
+  category: string,
 ): string {
   
   const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
+
+  const sample = generateText("Describe this book in a sentence", title)
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
   params.push(author);
-  params.push(generateText("Describe this book in a sentence", title));
+  params.push(sample);
+
 
   // Execute the SQL query to insert the new book
   const response = postgresql.execute(connection, query, params);
