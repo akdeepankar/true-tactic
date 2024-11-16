@@ -28,13 +28,12 @@ export function addBookToSupabase(
   
   const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
 
-  const sample = generateText("Describe this book in a sentence", title)
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
   params.push(author);
-  params.push(sample);
+  params.push(category);
 
 
   // Execute the SQL query to insert the new book
