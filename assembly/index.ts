@@ -45,6 +45,23 @@ export function addBookToSupabase(
 
 
 
+// Function to delete a book from the database by title
+export function deleteBookFromSupabase(title: string): string {
+  const query = 'DELETE FROM "Books" WHERE title = $1';
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(title);
+
+  // Execute the SQL query to delete the book
+  const response = postgresql.execute(connection, query, params);
+
+  // Return a success message
+  return "Book deleted successfully!";
+}
+
+
+
 
 
 @json
