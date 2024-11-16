@@ -32,7 +32,7 @@ export function addBookToSupabase(
   const params = new postgresql.Params();
   params.push(title);
   params.push(author);
-  params.push(category);
+  params.push(generateText("Describe this book in a sentence", title));
 
   // Execute the SQL query to insert the new book
   const response = postgresql.execute(connection, query, params);
