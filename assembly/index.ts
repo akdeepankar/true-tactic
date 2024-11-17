@@ -98,6 +98,54 @@ export function addStudentToSupabase(
 
 
 
+export function deleteStudentFromSupabase(studentId: i8): string {
+  const query = 'DELETE FROM "Students" WHERE id = $1';
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(studentId);
+
+  // Execute the SQL query to delete the student
+  const response = postgresql.execute(connection, query, params);
+
+  // Return a success message
+  return "Student deleted successfully!";
+}
+
+
+@json
+class StudentInfo {
+  id!: number;
+  name!: string;
+  roll!: string;
+  class!: string;
+  section!: string;
+}
+
+export function fetchStudents(page: i8, pageSize: i8): StudentInfo[] {
+  const offset = (page - 1) * pageSize;
+  const query = `
+    SELECT id, name, roll, class, section
+    FROM "Students"
+    ORDER BY id
+    LIMIT $1 OFFSET $2
+  `;
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(pageSize);
+  params.push(offset);
+
+  // Query the database
+  const response = postgresql.query<StudentInfo>(connection, query, params);
+
+  return response.rows;
+}
+
+
+
+
+
 
 
 
