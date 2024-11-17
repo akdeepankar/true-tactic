@@ -184,60 +184,6 @@ export function fetchStudentsWithSearch(page: i8, pageSize: i8, searchQuery: str
 
 
 
-
-
-
-@json
-class Person {
-  name!: string
-  age!: i32
-}
-
-export function getPerson(name: string): Person {
-  const query = "select * from persons where name = $1"
-
-  const params = new postgresql.Params()
-  params.push(name)
-
-  const response = postgresql.query<Person>(connection, query, params)
-  return response.rows[0]
-}
-
-// Function to add a new person to the database
-export function addPerson(name: string, age: i32): string {
-  // SQL statement for inserting a new person
-  const query = "INSERT INTO persons (name, age) VALUES ($1, $2)"
-  
-  // Create a Params object to hold query parameters
-  const params = new postgresql.Params()
-  params.push(name)
-  params.push(age)
-
-  // Execute the insert statement
-  const response = postgresql.execute(connection, query, params)
-
-  return "Person added successfully"
-}
-
-
-
-export function generateText2(instruction: string, prompt: string): string {
-
-  const model = models.getModel<OpenAIChatModel>("text-generator2");
-
-  const input = model.createInput([
-    new UserMessage(prompt),
-    new SystemMessage(instruction)
-  ]
-  );
-
-  input.temperature = 0.7;
-  const output = model.invoke(input);
-  return output.choices[0].message.content.trim();
-
-}
-
-
 export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
   const model = models.getModel<GeminiGenerateModel>("gemini-1-5-pro");
