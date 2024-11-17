@@ -143,6 +143,34 @@ export function fetchStudents(page: i8, pageSize: i8): StudentInfo[] {
 }
 
 
+@json
+class Student {
+  name!: string;
+  class!: string;
+  section!: string;
+  roll!: string;
+}
+
+export function queryStudentByName(studentName: string): string {
+  const query = 'SELECT name, class, section, roll FROM "Students" WHERE name = $1';
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(studentName);
+
+  // Query the database
+  const response = postgresql.query<Student>(connection, query, params);
+
+  if (response.rows.length > 0) {
+    const student = response.rows[0];
+    return `${student.name} is in class ${student.class}, section ${student.section}, roll number ${student.roll}.`;
+  } else {
+    return "Student not found.";
+  }
+}
+
+
+
 
 
 
