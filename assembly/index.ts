@@ -97,7 +97,6 @@ export function addStudentToSupabase(
 }
 
 
-
 export function deleteStudentFromSupabase(studentId: i8): string {
   const query = 'DELETE FROM "Students" WHERE id = $1';
 
@@ -143,31 +142,42 @@ export function fetchStudents(page: i8, pageSize: i8): StudentInfo[] {
 }
 
 
-@json
-class Student {
-  name!: string;
-  class!: string;
-  section!: string;
-  roll!: string;
-}
+export function fetchStudentsWithSearch(page: i8, pageSize: i8, searchQuery: string = ""): StudentInfo[] {
+  const offset = (page - 1) * pageSize;
 
-export function queryStudentByName(studentName: string): string {
-  const query = 'SELECT name, class, section, roll FROM "Students" WHERE name = $1';
+  let query = `
+    SELECT id, name, roll, class, section
+    FROM "Students"
+  `;
+
+  // Add search condition if a searchQuery is provided
+  if (searchQuery.length > 0) {
+    query += ` WHERE name ILIKE $3 `;
+  }
+
+  query += `
+    ORDER BY id
+    LIMIT $1 OFFSET $2
+  `;
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
-  params.push(studentName);
+  params.push(pageSize);
+  params.push(offset);
+
+  if (searchQuery.length > 0) {
+    params.push(`%${searchQuery}%`); // Add search query for name
+  }
 
   // Query the database
-  const response = postgresql.query<Student>(connection, query, params);
+  const response = postgresql.query<StudentInfo>(connection, query, params);
 
-  if (response.rows.length > 0) {
-    const student = response.rows[0];
-    return `${student.name} is in class ${student.class}, section ${student.section}, roll number ${student.roll}.`;
-  } else {
-    return "Student not found.";
-  }
+  // Return fetched rows
+  return response.rows;
 }
+
+
+
 
 
 
