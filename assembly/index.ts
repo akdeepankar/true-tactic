@@ -69,19 +69,19 @@ export function fetchTotalStudents(): i8 {
 
 
 
-
 export function addBookToSupabase(
   title: string,
   author: string,
   category: string,
-  about: string
+  about: string,
+  isbn: string,
 ): string {
   
-  const query = 'INSERT INTO "Books" (title, author, about, category) VALUES ($1, $2, $3, $4)';
+  const query = 'INSERT INTO "Books" (title, author, about, category, cover, isbn) VALUES ($1, $2, $3, $4, $5, $6)';
   
   const aboutdata = generateText("A Paragraph Description about this book. No Markup. Straightforward.", `${title} by ${author}`);
   const categorydata = generateText("Reply only in a word. Which book category is the following mentioned book.", `${title} by ${author}`);
-
+  const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
@@ -89,6 +89,8 @@ export function addBookToSupabase(
   params.push(author);
   params.push(aboutdata);
   params.push(categorydata);
+  params.push(coverdata);
+  params.push(isbn);
 
 
 
