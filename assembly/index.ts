@@ -11,14 +11,7 @@ import { JSON } from "json-as";
 const connection ="library-database"
 
 
-// Function to add a book to the Supabase database
-@json
-class Book {
-  title!: string;
-  author!: string;
-  category!: string;
 
-}
 
 export function addBookToSupabase(
   title: string,
@@ -61,19 +54,48 @@ export function deleteBookFromSupabase(title: string): string {
 }
 
 
-// Function to query a book's name and category by title
+@json
+class Book {
+  title!: string;
+  category!: string;
+
+}
+
+// query a book's name and category by title
 export function queryBookByTitle(title: string): string {
   const query = 'SELECT title, category FROM "Books" WHERE title = $1';
 
-  // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
 
-  // Execute the SQL query to fetch the book details
   const response = postgresql.query<Book>(connection, query, params);
 
   return response.rows[0].title + " is in the " + response.rows[0].category + " category.";
 }
+
+
+export function addStudentToSupabase(
+  name: string,
+  roll: string,
+  className: string,
+  section: string
+): string {
+  const query = 'INSERT INTO "Students" (name, roll, class, section) VALUES ($1, $2, $3, $4)';
+
+  // Create a Params object to hold query parameters
+  const params = new postgresql.Params();
+  params.push(name);
+  params.push(roll);
+  params.push(className);
+  params.push(section);
+
+  // Execute the SQL query to insert the new student
+  const response = postgresql.execute(connection, query, params);
+
+  // Return a success message
+  return "Student added successfully!";
+}
+
 
 
 
