@@ -11,22 +11,85 @@ import { JSON } from "json-as";
 const connection ="library-database"
 
 
+export function fetchTotalBooks(): i8 {
+  const query = 'SELECT * FROM "Books"';
+
+  // Create Params object (if necessary)
+  const params = new postgresql.Params();
+
+  // Execute the query to fetch all books
+  const response = postgresql.query<Book>(connection, query, params);
+
+  // Return the count of fetched books
+  return response.rows.length as i8;
+}
+
+
+export function fetchTotalIssuedBooks(): i8 {
+  const query = 'SELECT * FROM "Books" WHERE "issuedTo" IS NOT NULL';
+
+  // Create Params object (if necessary)
+  const params = new postgresql.Params();
+
+  // Execute the query to fetch all issued books
+  const response = postgresql.query<Book>(connection, query, params);
+
+  // Return the count of issued books
+  return response.rows.length as i8;
+}
+
+
+
+export function fetchTotalAvailableBooks(): i8 {
+  const query = 'SELECT * FROM "Books" WHERE "issuedTo" IS NULL';
+
+  // Create Params object (if necessary)
+  const params = new postgresql.Params();
+
+  // Execute the query to fetch all available books
+  const response = postgresql.query<Book>(connection, query, params);
+
+  // Return the count of available books
+  return response.rows.length as i8;
+}
+
+
+export function fetchTotalStudents(): i8 {
+  const query = 'SELECT * FROM "Students"';
+
+  // Create Params object (if necessary)
+  const params = new postgresql.Params();
+
+  // Execute the query to fetch all students
+  const response = postgresql.query<StudentInfo>(connection, query, params);
+
+  // Return the count of students
+  return response.rows.length as i8;
+}
+
+
 
 
 export function addBookToSupabase(
   title: string,
   author: string,
   category: string,
+  about: string
 ): string {
   
-  const query = 'INSERT INTO "Books" (title, author, category) VALUES ($1, $2, $3)';
+  const query = 'INSERT INTO "Books" (title, author, about, category) VALUES ($1, $2, $3, $4)';
+  
+  const aboutdata = generateText("A Paragraph Description about this book. No Markup. Straightforward.", `${title} by ${author}`);
+  const categorydata = generateText("Reply only in a word. Which book category is the following mentioned book.", `${title} by ${author}`);
 
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
   params.push(author);
-  params.push(category);
+  params.push(aboutdata);
+  params.push(categorydata);
+
 
 
   // Execute the SQL query to insert the new book
@@ -184,6 +247,9 @@ export function fetchStudentsWithSearch(page: i8, pageSize: i8, searchQuery: str
 
 
 
+
+
+
 export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
   const model = models.getModel<GeminiGenerateModel>("gemini-1-5-pro");
@@ -236,26 +302,6 @@ export function generateText(instruction: string, prompt: string): string {
 
 }
 
-@json
-class Quote {
-
-  @alias("q")
-  quote!: string;
-
-  @alias("a")
-  author!: string;
-}
-
-export function getRandomQuote(): Quote {
-  const request = new http.Request("https://zenquotes.io/api/random");
-
-  const response = http.fetch(request);
-  if (response.ok) {
-    return response.json<Quote[]>()[0];
-  } else {
-    throw new Error(`Failed to fetch random quote: ${response.status} ${response.statusText}`);
-  }
-  }
 
 export function sayHello(name: string | null = null): string {
   return `Hello, ${name || "World"}!`;
