@@ -72,8 +72,6 @@ export function fetchTotalStudents(): i8 {
 export function addBookToSupabase(
   title: string,
   author: string,
-  category: string,
-  about: string,
   isbn: string,
 ): string {
   
