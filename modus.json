@@ -17,6 +17,16 @@
       "sourceModel": "gemini-1.5-pro",
       "connection": "google",
       "path": "v1beta/models/gemini-1.5-pro:generateContent"  
+    },
+    "roberta-base": {
+      "sourceModel": "FacebookAI/roberta-base",
+      "provider": "hugging-face",
+      "connection": "hypermode"
+    },
+    "twitter-roberta-base-sentiment-latest": {
+      "sourceModel": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+      "provider": "hugging-face",
+      "connection": "hypermode"
     }
   },
   "connections": {

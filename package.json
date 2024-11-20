@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@hypermode/modus-sdk-as": "^0.13.3",
-    "json-as": "0.9.21"
+    "json-as": "0.9.21",
+    "react-toastify": "^10.0.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",

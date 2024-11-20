@@ -1,10 +1,33 @@
 import {http, models, postgresql} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
 import { GeminiGenerateModel, UserTextContent} from "@hypermode/modus-sdk-as/models/gemini/generate";
+import {
+  ClassificationModel,
+  ClassifierResult,
+} from "@hypermode/modus-sdk-as/models/experimental/classification"
 import { Content, Headers } from "@hypermode/modus-sdk-as/assembly/http";
 import { JSON } from "json-as";
 
 
+
+// this model name should match the one defined in the modus.json manifest file
+const modelName: string = "twitter-roberta-base-sentiment-latest"
+
+// this function takes input text and a probability threshold, and returns the
+// classification label determined by the model, if the confidence is above the
+// threshold; otherwise, it returns an empty string
+export function classifyText(text: string, threshold: f32): string {
+  const model = models.getModel<ClassificationModel>(modelName)
+  const input = model.createInput([text])
+  const output = model.invoke(input)
+
+  const prediction = output.predictions[0]
+  if (prediction.confidence >= threshold) {
+    return prediction.label
+  }
+
+  return ""
+}
 
 // the name of the PostgreSQL connection, as specified in the modus.json manifest
 //const connection = "my-database"
@@ -73,6 +96,7 @@ export function addBookToSupabase(
   title: string,
   author: string,
   isbn: string,
+
 ): string {
   
   const query = 'INSERT INTO "Books" (title, author, about, category, cover, isbn) VALUES ($1, $2, $3, $4, $5, $6)';
@@ -89,8 +113,6 @@ export function addBookToSupabase(
   params.push(categorydata);
   params.push(coverdata);
   params.push(isbn);
-
-
 
   // Execute the SQL query to insert the new book
   const response = postgresql.execute(connection, query, params);
