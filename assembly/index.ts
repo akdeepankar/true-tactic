@@ -11,7 +11,7 @@ import { JSON } from "json-as";
 
 
 // this model name should match the one defined in the modus.json manifest file
-const modelName: string = "twitter-roberta-base-sentiment-latest"
+const modelName: string = "roberta-base"
 
 // this function takes input text and a probability threshold, and returns the
 // classification label determined by the model, if the confidence is above the
