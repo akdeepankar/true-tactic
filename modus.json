@@ -22,6 +22,11 @@
       "sourceModel": "FacebookAI/roberta-base",
       "provider": "hugging-face",
       "connection": "hypermode"
+    },
+    "minilm": {
+      "sourceModel": "sentence-transformers/all-MiniLM-L6-v2",
+      "provider": "hugging-face",
+      "connection": "hypermode"
     }
   },
   "collections": {
