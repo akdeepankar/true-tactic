@@ -27,6 +27,11 @@
       "sourceModel": "cardiffnlp/twitter-roberta-base-sentiment-latest",
       "provider": "hugging-face",
       "connection": "hypermode"
+    },
+    "distilbert-base-uncased": {
+      "sourceModel": "distilbert/distilbert-base-uncased",
+      "provider": "hugging-face",
+      "connection": "hypermode"
     }
   },
   "connections": {
