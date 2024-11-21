@@ -11,39 +11,83 @@ import { JSON } from "json-as";
 import { collections } from "@hypermode/modus-sdk-as";
 import { EmbeddingsModel } from "@hypermode/modus-sdk-as/models/experimental/embeddings";
 
-const textsCollection = "texts";
+const bookCollection = "bookNames";
+const authorCollection = "authorNames";
+const aboutCollection = "bookDetails";
 const searchMethod = "searchMethod1";
 const embeddingModelName = "minilm";
 
-export function upsertTexts(ids: string[], texts: string[]): string[] {
-  const errors: string[] = [];
 
-  if (ids.length !== texts.length) {
-    errors.push("Length of all arrays must be the same");
-    return errors;
-  }
-
-  let result = collections.upsertBatch(textsCollection, ids, texts);
-
+export function upsertBook(
+  id: string,
+  title: string,
+  author: string,
+  about: string
+): string {
+  // Upsert title in bookCollection
+  let result = collections.upsert(bookCollection, id, title);
   if (!result.isSuccessful) {
-    errors.push(result.error);
-    return errors;
+    return `Error upserting title: ${result.error}`;
   }
 
-  return ids;
-}
-
-export function removeTexts(ids: string[]): string {
-  for (let i = 0; i < ids.length; i++) {
-    const res = collections.remove(textsCollection, ids[i]);
-
-    if (!res.isSuccessful) {
-      return `Error removing text with id: ${ids[i]} - ${res.error}`;
-    }
+  // Upsert author in authorCollection
+  result = collections.upsert(authorCollection, id, author);
+  if (!result.isSuccessful) {
+    return `Error upserting author: ${result.error}`;
   }
 
-  return "success";
+  // Upsert about in aboutCollection
+  result = collections.upsert(aboutCollection, id, about);
+  if (!result.isSuccessful) {
+    return `Error upserting about: ${result.error}`;
+  }
+
+  return id; // Return the id if all operations succeed
 }
+
+
+
+export function removeBook(id: string): string {
+  // Remove title from bookCollection
+  let result = collections.remove(bookCollection, id);
+  if (!result.isSuccessful) {
+    return `Error removing title: ${result.error}`;
+  }
+
+  // Remove author from authorCollection
+  result = collections.remove(authorCollection, id);
+  if (!result.isSuccessful) {
+    return `Error removing author: ${result.error}`;
+  }
+
+  // Remove about from aboutCollection
+  result = collections.remove(aboutCollection, id);
+  if (!result.isSuccessful) {
+    return `Error removing about: ${result.error}`;
+  }
+
+  return "success"; // Return success if all operations are successful
+}
+
+
+export function searchBooks(query: string): collections.CollectionSearchResult {
+  // Perform the search operation in the bookCollection
+  const searchResults = collections.search(
+    bookCollection, // Collection to search in
+    searchMethod,   // Search method to use
+    query,          // Query string
+    10,             // Limit results to 10
+    true            // Enable fuzzy matching
+  );
+
+  // Check if the search operation was successful
+  if (!searchResults.isSuccessful) {
+    return searchResults; // Return the unsuccessful result for debugging
+  }
+
+  return searchResults; // Return the search results
+}
+
 
 
 export function miniLMEmbed(texts: string[]): f32[][] {
@@ -53,21 +97,7 @@ export function miniLMEmbed(texts: string[]): f32[][] {
   return output.predictions;
 }
 
-export function search(query: string): collections.CollectionSearchResult {
-  const searchResults = collections.search(
-    textsCollection,
-    searchMethod,
-    query,
-    10,
-    true,
-  );
 
-  if (!searchResults.isSuccessful) {
-    return searchResults;
-  }
-
-  return searchResults;
-}
 
 
 
