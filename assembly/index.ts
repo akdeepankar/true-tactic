@@ -73,7 +73,7 @@ export function removeBook(id: string): string {
 export function searchBooks(query: string): collections.CollectionSearchResult {
   // Perform the search operation in the bookCollection
   const searchResults = collections.search(
-    aboutCollection, // Collection to search in
+    bookCollection, // Collection to search in
     searchMethod,   // Search method to use
     query,          // Query string
     10,             // Limit results to 10

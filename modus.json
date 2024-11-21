@@ -41,10 +41,24 @@
       }
     },
     "authorNames": {
-      "searchMethods": {}
+      "searchMethods": {
+        "searchMethod1": {
+          "embedder": "miniLMEmbed",
+          "index": {
+            "type": "sequential"
+          }
+        }
+      }
       },
     "bookDetails": {
-      "searchMethods": {}
+      "searchMethods": {
+        "searchMethod1": {
+          "embedder": "miniLMEmbed",
+          "index": {
+            "type": "sequential"
+          }
+        }
+      }
     }
     },
   "connections": {
