@@ -20,27 +20,26 @@ const embeddingModelName = "minilm";
 
 export function upsertBook(
   id: string,
-  title: string,
-  author: string,
+  title: string[],
   about: string
 ): string {
   // Upsert title in bookCollection
-  let result = collections.upsert(bookCollection, id, title);
+  let result = collections.upsert(bookCollection, id, about, title);
   if (!result.isSuccessful) {
     return `Error upserting title: ${result.error}`;
   }
 
   // Upsert author in authorCollection
-  result = collections.upsert(authorCollection, id, author);
-  if (!result.isSuccessful) {
-    return `Error upserting author: ${result.error}`;
-  }
+  //result = collections.upsert(authorCollection, id, author);
+  //if (!result.isSuccessful) {
+  //  return `Error upserting author: ${result.error}`;
+  //}
 
   // Upsert about in aboutCollection
-  result = collections.upsert(aboutCollection, id, about);
-  if (!result.isSuccessful) {
-    return `Error upserting about: ${result.error}`;
-  }
+ // result = collections.upsert(aboutCollection, id, about);
+ // if (!result.isSuccessful) {
+ //   return `Error upserting about: ${result.error}`;
+ // }
 
   return id; // Return the id if all operations succeed
 }
@@ -89,39 +88,6 @@ export function searchBooks(query: string): collections.CollectionSearchResult {
 }
 
 
-export function searchBooks2(query: string, maxItems: i32): collections.CollectionSearchResult {
-  // Perform the search in the bookDetails collection
-  const semanticSearchRes = collections.search(
-    aboutCollection,  // Search in bookDetails
-    searchMethod,  // Define your search method
-    query,
-    maxItems,
-    true,
-  );
-
-  // If the search fails, return the error
-  if (!semanticSearchRes.isSuccessful) {
-    return semanticSearchRes;
-  }
-
-  // Now extract the book names from the results
-  const bookNames: string[] = [];
-  for (let i = 0; i < semanticSearchRes.objects.length; i++) {
-    const bookId = semanticSearchRes.objects[i].key;
-    const bookName = collections.getText(bookCollection, bookId);
-    bookNames.push(bookName);
-  }
-
-  // Return the search results with book names
-  return {
-    isSuccessful: true,
-    objects: bookNames.map((name) => ({ key: name, namespace: "", text: "", labels: [], distance: 0, score: 0 })), // Return just book names
-    searchMethod: searchMethod,
-    collection: aboutCollection,
-    status: '200',
-    error: ""
-  };
-}
 
 
 
