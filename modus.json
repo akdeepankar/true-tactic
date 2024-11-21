@@ -22,16 +22,18 @@
       "sourceModel": "FacebookAI/roberta-base",
       "provider": "hugging-face",
       "connection": "hypermode"
-    },
-    "twitter-roberta-base-sentiment-latest": {
-      "sourceModel": "cardiffnlp/twitter-roberta-base-sentiment-latest",
-      "provider": "hugging-face",
-      "connection": "hypermode"
-    },
-    "distilbert-base-uncased": {
-      "sourceModel": "distilbert/distilbert-base-uncased",
-      "provider": "hugging-face",
-      "connection": "hypermode"
+    }
+  },
+  "collections": {
+    "texts": {
+      "searchMethods": {
+        "searchMethod1": {
+          "embedder": "miniLMEmbed",
+          "index": {
+            "type": "sequential"
+          }
+        }
+      }
     }
   },
   "connections": {
