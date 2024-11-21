@@ -33,6 +33,20 @@ export function upsertTexts(ids: string[], texts: string[]): string[] {
   return ids;
 }
 
+export function removeTexts(ids: string[]): string[] {
+  const errors: string[] = [];
+
+  ids.forEach((id) => {
+    const result = collections.remove(textsCollection, id);
+
+    if (!result.isSuccessful) {
+      errors.push(result.error);
+    }
+  });
+
+  return errors;
+}
+
 export function miniLMEmbed(texts: string[]): f32[][] {
   const model = models.getModel<EmbeddingsModel>(embeddingModelName);
   const input = model.createInput(texts);
