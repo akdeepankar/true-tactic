@@ -46,23 +46,11 @@ export function upsertBook(
 
 
 
-export function removeBook(id: string): string {
+export function removeBook(title: string): string {
   // Remove title from bookCollection
-  let result = collections.remove(bookCollection, id);
+  let result = collections.remove(bookCollection, title);
   if (!result.isSuccessful) {
     return `Error removing title: ${result.error}`;
-  }
-
-  // Remove author from authorCollection
-  result = collections.remove(authorCollection, id);
-  if (!result.isSuccessful) {
-    return `Error removing author: ${result.error}`;
-  }
-
-  // Remove about from aboutCollection
-  result = collections.remove(aboutCollection, id);
-  if (!result.isSuccessful) {
-    return `Error removing about: ${result.error}`;
   }
 
   return "success"; // Return success if all operations are successful
@@ -201,6 +189,8 @@ export function addBookToSupabase(
   const categorydata = generateText("Reply only in a word. Which book category is the following mentioned book.", `${title} by ${author}`);
   const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
 
+  upsertBook(isbn, [title], aboutdata);
+
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
@@ -226,6 +216,10 @@ export function deleteBookFromSupabase(title: string): string {
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
   params.push(title);
+
+  removeBook(title);
+
+  
 
   // Execute the SQL query to delete the book
   const response = postgresql.execute(connection, query, params);
