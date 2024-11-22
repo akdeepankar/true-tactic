@@ -186,9 +186,10 @@ export function addBookToSupabase(
   
   const aboutdata = generateText("A Paragraph Description about this book. No Markup. Straightforward.", `${title} by ${author}`);
   const categorydata = generateText("Reply only in a word. Which book category is the following mentioned book.", `${title} by ${author}`);
+  const about = generateText("Reply only in two sentence about the genre of the book.", `${title} by ${author}`);
   const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
 
-  //upsertBook(isbn, [title], aboutdata);
+  upsertBook(title, about);
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
