@@ -10,9 +10,7 @@ import { JSON } from "json-as";
 import { collections } from "@hypermode/modus-sdk-as";
 import { EmbeddingsModel } from "@hypermode/modus-sdk-as/models/experimental/embeddings";
 
-const bookCollection = "bookNames";
-const authorCollection = "authorNames";
-const aboutCollection = "bookDetails";
+const bookCollection = "books";
 const searchMethod = "searchMethod1";
 const embeddingModelName = "minilm";
 

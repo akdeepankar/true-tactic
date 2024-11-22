@@ -30,27 +30,7 @@
     }
   },
   "collections": {
-    "bookNames": {
-      "searchMethods": {
-        "searchMethod1": {
-          "embedder": "miniLMEmbed",
-          "index": {
-            "type": "sequential"
-          }
-        }
-      }
-    },
-    "authorNames": {
-      "searchMethods": {
-        "searchMethod1": {
-          "embedder": "miniLMEmbed",
-          "index": {
-            "type": "sequential"
-          }
-        }
-      }
-      },
-    "bookDetails": {
+    "books": {
       "searchMethods": {
         "searchMethod1": {
           "embedder": "miniLMEmbed",
