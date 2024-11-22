@@ -13,16 +13,6 @@
       "provider": "hugging-face", 
       "connection": "hypermode" 
     },
-    "gemini-1-5-pro": {
-      "sourceModel": "gemini-1.5-pro",
-      "connection": "google",
-      "path": "v1beta/models/gemini-1.5-pro:generateContent"  
-    },
-    "roberta-base": {
-      "sourceModel": "FacebookAI/roberta-base",
-      "provider": "hugging-face",
-      "connection": "hypermode"
-    },
     "minilm": {
       "sourceModel": "sentence-transformers/all-MiniLM-L6-v2",
       "provider": "hugging-face",

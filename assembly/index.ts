@@ -75,13 +75,6 @@ export function searchBooks(query: string): collections.CollectionSearchResult {
 }
 
 
-
-
-
-
-
-
-
 export function miniLMEmbed(texts: string[]): f32[][] {
   const model = models.getModel<EmbeddingsModel>(embeddingModelName);
   const input = model.createInput(texts);
@@ -89,34 +82,9 @@ export function miniLMEmbed(texts: string[]): f32[][] {
   return output.predictions;
 }
 
-
-
-
-
-// this model name should match the one defined in the modus.json manifest file
-const modelName: string = "roberta-base"
-
-// this function takes input text and a probability threshold, and returns the
-// classification label determined by the model, if the confidence is above the
-// threshold; otherwise, it returns an empty string
-export function classifyText(text: string, threshold: f32): string {
-  const model = models.getModel<ClassificationModel>(modelName)
-  const input = model.createInput([text])
-  const output = model.invoke(input)
-
-  const prediction = output.predictions[0]
-  if (prediction.confidence >= threshold) {
-    return prediction.label
-  }
-
-  return ""
-}
-
 // the name of the PostgreSQL connection, as specified in the modus.json manifest
-//const connection = "my-database"
+
 const connection ="library-database"
-
-
 
 export function addBookToSupabase(
   title: string,
@@ -151,9 +119,6 @@ export function addBookToSupabase(
 }
 
 
-
-
-
 // Function to delete a book from the database by title
 export function deleteBookFromSupabase2(title: string): string {
   const query = 'DELETE FROM "Books" WHERE title = $1';
@@ -164,33 +129,11 @@ export function deleteBookFromSupabase2(title: string): string {
 
   removeBook(title);
 
-  
-
   // Execute the SQL query to delete the book
   const response = postgresql.execute(connection, query, params);
 
   // Return a success message
   return "Book deleted successfully!";
-}
-
-
-@json
-class Book {
-  title!: string;
-  category!: string;
-
-}
-
-// query a book's name and category by title
-export function queryBookByTitle(title: string): string {
-  const query = 'SELECT title, category FROM "Books" WHERE title = $1';
-
-  const params = new postgresql.Params();
-  params.push(title);
-
-  const response = postgresql.query<Book>(connection, query, params);
-
-  return response.rows[0].title + " is in the " + response.rows[0].category + " category.";
 }
 
 
@@ -232,48 +175,6 @@ export function deleteStudentFromSupabase(studentId: i8): string {
 }
 
 
-@json
-class StudentInfo {
-  id!: number;
-  name!: string;
-  roll!: string;
-  class!: string;
-  section!: string;
-}
-
-
-export function generateTextWithGemini( prompt: string): string {
-  // Retrieve the Gemini Generate model
-  const model = models.getModel<GeminiGenerateModel>("gemini-1-5-pro");
-
-  // Create the user text content
-  const userContent = new UserTextContent(prompt);
-
-  // Prepare the input for the model
-  const input = model.createInput([userContent]);
-
-  // Invoke the model and get the output
-  const output = model.invoke(input);
-
-  // Check if the output has candidates and extract response content
-  if (output && output.candidates.length > 0) {
-    const firstCandidate = output.candidates[0];
-    const responseContent = firstCandidate.content; // Assuming content is an object with parts
-
-    // Check if responseContent is valid and has parts
-    if (responseContent && responseContent.parts.length > 0) {
-      return responseContent.parts[0].text.trim(); // Return the first part's text
-    } else {
-      throw new Error("No response content available.");
-    }
-  } else {
-    throw new Error("No candidates available.");
-  }
-
-  // Default return statement; this should not be reached due to the above logic
-  return "No output generated.";
-}
-
 
 export function generateText(instruction: string, prompt: string): string {
 
@@ -289,50 +190,4 @@ export function generateText(instruction: string, prompt: string): string {
   const output = model.invoke(input);
   return output.choices[0].message.content.trim();
 
-}
-
-
-export function sayHello(name: string | null = null): string {
-  return `Hello, ${name || "World"}!`;
-}
-
-@json
-class Color {
-  name!: string;
-  hex!: string;
-  requestedHex!: string;
-}
-
-@json
-class ColorResponse {
-  colors!: Color[];
-}
-
-export function fetchColorNames(hexCodes: string[]): string[] {
-  const url = `https://api.color.pizza/v1/?values=${hexCodes.join(",")}`;
-  const request = new http.Request(url);
-  const response = http.fetch(request);
-
-  if (response.ok) {
-    const data = response.json<ColorResponse>();
-
-    // Initialize an empty array for color names
-    const colorNames = new Array<string>();
-
-    // Use a for loop to iterate over the colors array
-    for (let i = 0; i < data.colors.length; i++) {
-      const color = data.colors[i];
-      colorNames.push(color.name);
-    }
-
-    // Check if the array is empty
-    if (colorNames.length === 0) {
-      throw new Error("No colors returned from the API.");
-    }
-
-    // Return only the color names array
-    return colorNames;
-  } else {
-    throw new Error(`Failed to fetch color names: ${response.status} ${response.statusText}`);
-  }
 }
