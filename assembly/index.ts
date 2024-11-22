@@ -7,7 +7,6 @@ import {
 } from "@hypermode/modus-sdk-as/models/experimental/classification"
 import { Content, Headers } from "@hypermode/modus-sdk-as/assembly/http";
 import { JSON } from "json-as";
-
 import { collections } from "@hypermode/modus-sdk-as";
 import { EmbeddingsModel } from "@hypermode/modus-sdk-as/models/experimental/embeddings";
 
@@ -21,9 +20,12 @@ const embeddingModelName = "minilm";
 export function upsertBook(
   id: string,
   about: string,
+  title: string,
+  author: string,
+  cover: string
 ): string {
   // Upsert title in bookCollection
-  let result = collections.upsert(bookCollection, id, about);
+  let result = collections.upsert(bookCollection, id, about, [title, author, cover]);
   if (!result.isSuccessful) {
     return `Error upserting title: ${result.error}`;
   }
@@ -117,63 +119,6 @@ export function classifyText(text: string, threshold: f32): string {
 const connection ="library-database"
 
 
-export function fetchTotalBooks(): i8 {
-  const query = 'SELECT * FROM "Books"';
-
-  // Create Params object (if necessary)
-  const params = new postgresql.Params();
-
-  // Execute the query to fetch all books
-  const response = postgresql.query<Book>(connection, query, params);
-
-  // Return the count of fetched books
-  return response.rows.length as i8;
-}
-
-
-export function fetchTotalIssuedBooks(): i8 {
-  const query = 'SELECT * FROM "Books" WHERE "issuedTo" IS NOT NULL';
-
-  // Create Params object (if necessary)
-  const params = new postgresql.Params();
-
-  // Execute the query to fetch all issued books
-  const response = postgresql.query<Book>(connection, query, params);
-
-  // Return the count of issued books
-  return response.rows.length as i8;
-}
-
-
-
-export function fetchTotalAvailableBooks(): i8 {
-  const query = 'SELECT * FROM "Books" WHERE "issuedTo" IS NULL';
-
-  // Create Params object (if necessary)
-  const params = new postgresql.Params();
-
-  // Execute the query to fetch all available books
-  const response = postgresql.query<Book>(connection, query, params);
-
-  // Return the count of available books
-  return response.rows.length as i8;
-}
-
-
-export function fetchTotalStudents(): i8 {
-  const query = 'SELECT * FROM "Students"';
-
-  // Create Params object (if necessary)
-  const params = new postgresql.Params();
-
-  // Execute the query to fetch all students
-  const response = postgresql.query<StudentInfo>(connection, query, params);
-
-  // Return the count of students
-  return response.rows.length as i8;
-}
-
-
 
 export function addBookToSupabase(
   title: string,
@@ -189,7 +134,7 @@ export function addBookToSupabase(
   const about = generateText("Reply only in two sentence about the genre of the book.", `${title} by ${author}`);
   const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
 
-  upsertBook(title, about);
+  upsertBook(title, about, title, author, coverdata);
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
@@ -207,21 +152,6 @@ export function addBookToSupabase(
   return "Book added successfully!";
 }
 
-
-export function deleteBookFromSupabase(isbn: string): string {
-    // Define the SQL query to delete the book based on the ISBN
-    const query = 'DELETE FROM "Books" WHERE isbn = $1';
-
-    // Create Params object to hold the ISBN as a query parameter
-    const params = new postgresql.Params();
-    params.push(isbn);
-
-    // Execute the SQL query to delete the book
-    const response = postgresql.execute(connection, query, params);
-
-    // Return success message
-    return "Book deleted successfully!";
-}
 
 
 
@@ -313,71 +243,6 @@ class StudentInfo {
   section!: string;
 }
 
-export function fetchStudents(page: i8, pageSize: i8): StudentInfo[] {
-  const offset = (page - 1) * pageSize;
-  const query = `
-    SELECT id, name, roll, class, section
-    FROM "Students"
-    ORDER BY id
-    LIMIT $1 OFFSET $2
-  `;
-
-  // Create a Params object to hold query parameters
-  const params = new postgresql.Params();
-  params.push(pageSize);
-  params.push(offset);
-
-  // Query the database
-  const response = postgresql.query<StudentInfo>(connection, query, params);
-
-  return response.rows;
-}
-
-
-export function fetchStudentsWithSearch(page: i8, pageSize: i8, searchQuery: string = ""): StudentInfo[] {
-  const offset = (page - 1) * pageSize;
-
-  let query = `
-    SELECT id, name, roll, class, section
-    FROM "Students"
-  `;
-
-  // Add search condition if a searchQuery is provided
-  if (searchQuery.length > 0) {
-    query += ` WHERE name ILIKE $3 `;
-  }
-
-  query += `
-    ORDER BY id
-    LIMIT $1 OFFSET $2
-  `;
-
-  // Create a Params object to hold query parameters
-  const params = new postgresql.Params();
-  params.push(pageSize);
-  params.push(offset);
-
-  if (searchQuery.length > 0) {
-    params.push(`%${searchQuery}%`); // Add search query for name
-  }
-
-  // Query the database
-  const response = postgresql.query<StudentInfo>(connection, query, params);
-
-  // Return fetched rows
-  return response.rows;
-}
-
-
-
-
-
-
-
-
-
-
-
 
 export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
@@ -410,9 +275,6 @@ export function generateTextWithGemini( prompt: string): string {
   // Default return statement; this should not be reached due to the above logic
   return "No output generated.";
 }
-
-
-
 
 
 export function generateText(instruction: string, prompt: string): string {
