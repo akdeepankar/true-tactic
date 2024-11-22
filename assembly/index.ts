@@ -46,9 +46,9 @@ export function upsertBook(
 
 
 
-export function removeBook(title: string): string {
+export function removeBook(id: string): string {
   // Remove title from bookCollection
-  let result = collections.remove(bookCollection, title);
+  let result = collections.remove(bookCollection, id);
   if (!result.isSuccessful) {
     return `Error removing title: ${result.error}`;
   }
