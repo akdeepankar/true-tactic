@@ -101,7 +101,7 @@ export function addBookToSupabase(
 
 
 // Function to delete a book from the database by title
-export function deleteBookFromSupabase2(title: string): string {
+export function deleteBookFromSupabase(title: string): string {
   const query = 'DELETE FROM "Books" WHERE title = $1';
 
   // Create a Params object to hold query parameters
