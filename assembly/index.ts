@@ -1,12 +1,5 @@
-import {http, models, postgresql} from "@hypermode/modus-sdk-as";
+import { models, postgresql} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
-import { GeminiGenerateModel, UserTextContent} from "@hypermode/modus-sdk-as/models/gemini/generate";
-import {
-  ClassificationModel,
-  ClassifierResult,
-} from "@hypermode/modus-sdk-as/models/experimental/classification"
-import { Content, Headers } from "@hypermode/modus-sdk-as/assembly/http";
-import { JSON } from "json-as";
 import { collections } from "@hypermode/modus-sdk-as";
 import { EmbeddingsModel } from "@hypermode/modus-sdk-as/models/experimental/embeddings";
 
@@ -27,18 +20,6 @@ export function upsertBook(
   if (!result.isSuccessful) {
     return `Error upserting title: ${result.error}`;
   }
-
-  // Upsert author in authorCollection
-  //result = collections.upsert(authorCollection, id, author);
-  //if (!result.isSuccessful) {
-  //  return `Error upserting author: ${result.error}`;
-  //}
-
-  // Upsert about in aboutCollection
- // result = collections.upsert(aboutCollection, id, about);
- // if (!result.isSuccessful) {
- //   return `Error upserting about: ${result.error}`;
- // }
 
   return id; // Return the id if all operations succeed
 }
