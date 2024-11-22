@@ -20,11 +20,10 @@ const embeddingModelName = "minilm";
 
 export function upsertBook(
   id: string,
-  title: string[],
-  about: string
+  about: string,
 ): string {
   // Upsert title in bookCollection
-  let result = collections.upsert(bookCollection, id, about, title);
+  let result = collections.upsert(bookCollection, id, about);
   if (!result.isSuccessful) {
     return `Error upserting title: ${result.error}`;
   }
@@ -189,7 +188,7 @@ export function addBookToSupabase(
   const categorydata = generateText("Reply only in a word. Which book category is the following mentioned book.", `${title} by ${author}`);
   const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
 
-  upsertBook(isbn, [title], aboutdata);
+  //upsertBook(isbn, [title], aboutdata);
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
