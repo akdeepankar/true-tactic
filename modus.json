@@ -36,6 +36,10 @@
       "type": "http",
       "baseUrl": "https://api.color.pizza/"
     },
+    "openBook": {
+      "type": "http",
+      "baseUrl": "https://openlibrary.org/"
+    },
     "google": {
       "type": "http",
       "baseUrl": "https://generativelanguage.googleapis.com/",

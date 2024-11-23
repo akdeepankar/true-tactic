@@ -1,7 +1,9 @@
-import { models, postgresql} from "@hypermode/modus-sdk-as";
+import { http, models, postgresql} from "@hypermode/modus-sdk-as";
 import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
 import { collections } from "@hypermode/modus-sdk-as";
 import { EmbeddingsModel } from "@hypermode/modus-sdk-as/models/experimental/embeddings";
+import { JSON } from "json-as";
+import { fetch } from "@hypermode/modus-sdk-as/assembly/http";
 
 const bookCollection = "books";
 const searchMethod = "searchMethod1";
@@ -24,8 +26,6 @@ export function upsertBook(
   return id; // Return the id if all operations succeed
 }
 
-
-
 export function removeBook(id: string): string {
   // Remove title from bookCollection
   let result = collections.remove(bookCollection, id);
@@ -35,7 +35,6 @@ export function removeBook(id: string): string {
 
   return "success"; // Return success if all operations are successful
 }
-
 
 export function searchBooks(query: string): collections.CollectionSearchResult {
   // Perform the search operation in the bookCollection
@@ -171,4 +170,98 @@ export function generateText(instruction: string, prompt: string): string {
   const output = model.invoke(input);
   return output.choices[0].message.content.trim();
 
+}
+
+
+@json
+class Book {
+  title!: string;
+  author!: string;
+  publishYear!: number;
+  cover!: string;
+  description!: string;
+  key!: string;  // Add the key field to store the OpenLibrary key
+}
+
+// Define a class for the structure of each doc in the OpenLibrary response
+@json
+class OpenLibraryDoc {
+  title!: string;
+  author_name!: string[];
+  first_publish_year!: number;
+  cover_i!: number;
+  description!: string;
+  key!: string;  // Include the key from OpenLibrary response
+}
+
+// Define the response format from OpenLibrary
+@json
+class OpenLibraryResponse {
+  docs!: OpenLibraryDoc[];
+}
+
+export function fetchOpenBook(searchTerm: string): Book[] {
+  const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=10`;
+  const request = new http.Request(url);
+  const response = http.fetch(request);
+
+  if (response.ok) {
+    // Parse the JSON response
+    const data = response.json<OpenLibraryResponse>();
+
+    // Initialize an array to hold Book objects
+    const books = new Array<Book>();
+
+    // Iterate over the results
+    for (let i = 0; i < data.docs.length; i++) {
+      const bookData = data.docs[i];
+
+      const book = new Book();
+      book.title = bookData.title || "Unknown Title";
+      book.author = bookData.author_name && bookData.author_name.length > 0 ? bookData.author_name[0] : "Unknown Author";
+      book.publishYear = bookData.first_publish_year || 0; // Defaults to 0 if not available
+      book.cover = bookData.cover_i
+        ? `https://covers.openlibrary.org/b/id/${bookData.cover_i}-L.jpg`
+        : "Cover not available.";
+      book.description = fetchBookDescription(bookData.key).description;
+      book.key = bookData.key || "No Key Available";  // Map the OpenLibrary key
+
+      books.push(book);
+    }
+
+    // Check if any books were added
+    if (books.length === 0) {
+      throw new Error("No books returned from the API.");
+    }
+
+    // Return the array of books
+    return books;
+  } else {
+    throw new Error(`Failed to fetch book details: ${response.status} ${response.statusText}`);
+  }
+}
+
+
+// Define a class for detailed book information
+@json
+class DetailedBook {
+  title!: string;
+  description!: string;
+}
+
+// Function to fetch book details by key
+export function fetchBookDescription(key: string): DetailedBook {
+  const url = `https://openlibrary.org${key}.json`; // Using the key to fetch detailed info
+  const request = new http.Request(url);
+  const response = http.fetch(request);
+
+  if (response.ok) {
+    // Parse the JSON response
+    const data = response.json<DetailedBook>();
+
+    // Return the detailed book object
+    return data.description ? data : { title: "No Title", description: "No Description" };
+  } else {
+    throw new Error(`Failed to fetch book details: ${response.status} ${response.statusText}`);
+  }
 }
