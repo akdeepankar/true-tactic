@@ -181,6 +181,7 @@ class Book {
   cover!: string;
   description!: string;
   key!: string;  // Add the key field to store the OpenLibrary key
+  isbn!: string; // ISBN number
 }
 
 // Define a class for the structure of each doc in the OpenLibrary response
@@ -192,6 +193,7 @@ class OpenLibraryDoc {
   cover_i!: number;
   description!: string;
   key!: string;  // Include the key from OpenLibrary response
+  isbn!: string[]; // Array of ISBNs from OpenLibrary
 }
 
 // Define the response format from OpenLibrary
@@ -220,12 +222,10 @@ export function fetchOpenBook(searchTerm: string): Book[] {
       book.title = bookData.title || "Unknown Title";
       book.author = bookData.author_name && bookData.author_name.length > 0 ? bookData.author_name[0] : "Unknown Author";
       book.publishYear = bookData.first_publish_year || 0; // Defaults to 0 if not available
-      book.cover = bookData.cover_i
-        ? `https://covers.openlibrary.org/b/id/${bookData.cover_i}-L.jpg`
-        : "Cover not available.";
       book.description = fetchBookDescription(bookData.key).description;
       book.key = bookData.key || "No Key Available";  // Map the OpenLibrary key
-
+      book.isbn = bookData.isbn[0] || "No ISBN Available"; // Fetch the first ISBN if available
+      book.cover = `https://covers.openlibrary.org/b/isbn/${bookData.isbn[0]}-L.jpg`
       books.push(book);
     }
 
@@ -265,3 +265,4 @@ export function fetchBookDescription(key: string): DetailedBook {
     throw new Error(`Failed to fetch book details: ${response.status} ${response.statusText}`);
   }
 }
+
