@@ -32,20 +32,9 @@
     }
     },
   "connections": {
-    "colors": {
-      "type": "http",
-      "baseUrl": "https://api.color.pizza/"
-    },
     "openBook": {
       "type": "http",
       "baseUrl": "https://openlibrary.org/"
-    },
-    "google": {
-      "type": "http",
-      "baseUrl": "https://generativelanguage.googleapis.com/",
-      "headers": {
-        "X-goog-api-key": "AIzaSyCA25KPArcjrC0AbT8n8SweiV5ktE_ta0s"
-      }
     },
     "library-database": {
       "type": "postgresql",
