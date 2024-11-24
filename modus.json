@@ -32,7 +32,7 @@
     }
     },
   "connections": {
-    "openBook": {
+    "openLibrary": {
       "type": "http",
       "baseUrl": "https://openlibrary.org/"
     },
