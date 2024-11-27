@@ -11,6 +11,205 @@ const searchMethod = "searchMethod1";
 const embeddingModelName = "minilm";
 
 
+export function generateStripePaymentLink(
+  apiKey: string,
+  amount: i32,
+  currency: string,
+  description: string,
+  customerName: string,
+  customerEmail: string
+): string {
+  // Validate inputs
+  if (!apiKey || apiKey.trim() === "") {
+    return "Error: API key is invalid or empty.";
+  }
+  if (amount <= 0) {
+    return "Error: Payment amount must be greater than zero.";
+  }
+  if (!currency || currency.trim() === "") {
+    return "Error: Currency is invalid or empty.";
+  }
+  if (!description || description.trim() === "") {
+    return "Error: Description is invalid or empty.";
+  }
+  if (!customerName || customerName.trim() === "") {
+    return "Error: Customer name is required.";
+  }
+  if (!customerEmail || customerEmail.trim() === "") {
+    return "Error: Customer email is required.";
+  }
+
+  // Base64 encode the API key for authentication
+  const authHeader = toBase64(apiKey + ":");
+
+  // Create the payload for the request
+  let payload =
+    '{ "amount": ' +
+    (amount * 100).toString() + // Convert to the smallest currency unit (e.g., cents for USD, paise for INR)
+    ', "currency": "' +
+    currency +
+    '", "description": "' +
+    description +
+    '", "receipt_email": "' +
+    customerEmail +
+    '" }';
+
+  // Define headers
+  const headers = new Headers();
+  headers.append("Content-Type", "application/x-www-form-urlencoded");
+  headers.append("Authorization", "Basic " + authHeader);
+
+  // Define request options
+  const options = new RequestOptions();
+  options.method = "POST";
+  options.headers = headers;
+  options.body = Content.from(payload);
+
+  // Send the HTTP request to the Stripe API to create a payment intent
+  const url = "https://api.stripe.com/v1/payment_intents";
+  const request = new Request(url, options);
+  const response = http.fetch(request);
+
+  // Handle the response
+  if (response.ok) {
+    const responseData = response.text(); // Get response as plain text
+    const clientSecretIndex = responseData.indexOf('"client_secret":"');
+    if (clientSecretIndex > -1) {
+      const start = clientSecretIndex + 17;
+      const end = responseData.indexOf('"', start);
+      const clientSecret = responseData.substring(start, end);
+      return "Payment link generated successfully. Client Secret: " + clientSecret;
+    } else {
+      return "Error: Failed to retrieve client secret from response.";
+    }
+  } else {
+    return "Error generating payment link: " + response.status.toString();
+  }
+}
+
+
+
+export function generatePaymentLink(
+  apiKey: string,
+  apiSecret: string,
+  amount: i32,
+  currency: string,
+  description: string,
+  customerName: string,
+  customerEmail: string
+): string {
+  // Validate inputs
+  if (!apiKey || apiKey.trim() === "") {
+    return "Error: API key is invalid or empty.";
+  }
+  if (!apiSecret || apiSecret.trim() === "") {
+    return "Error: API secret is invalid or empty.";
+  }
+  if (amount <= 0) {
+    return "Error: Payment amount must be greater than zero.";
+  }
+  if (!currency || currency.trim() === "") {
+    return "Error: Currency is invalid or empty.";
+  }
+  if (!description || description.trim() === "") {
+    return "Error: Description is invalid or empty.";
+  }
+  if (!customerName || customerName.trim() === "") {
+    return "Error: Customer name is required.";
+  }
+  if (!customerEmail || customerEmail.trim() === "") {
+    return "Error: Customer email is required.";
+  }
+
+  // Base64 encode API key and secret
+  const authHeader = toBase64(apiKey + ":" + apiSecret);
+
+  // Create the payload
+  let payload =
+    '{ "amount": ' +
+    (amount * 100).toString() + // Convert amount to paise
+    ', "currency": "' +
+    currency +
+    '", "description": "' +
+    description +
+    '", "customer": { "name": "' +
+    customerName +
+    '", "email": "' +
+    customerEmail +
+    '" } }';
+
+  // Define headers
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", "Basic " + authHeader);
+
+  // Define request options
+  const options = new RequestOptions();
+  options.method = "POST";
+  options.headers = headers;
+  options.body = Content.from(payload);
+
+  // Send the HTTP request
+  const url = "https://api.razorpay.com/v1/payment_links";
+  const request = new Request(url, options);
+  const response = http.fetch(request);
+
+  // Handle the response
+  if (response.ok) {
+    const responseData = response.text(); // Get response as plain text
+    const shortUrlIndex = responseData.indexOf('"short_url":"');
+    if (shortUrlIndex > -1) {
+      const start = shortUrlIndex + 13;
+      const end = responseData.indexOf('"', start);
+      const shortUrl = responseData.substring(start, end);
+      return "Payment link generated successfully: " + shortUrl;
+    } else {
+      return "Error: Failed to retrieve payment link from response.";
+    }
+  } else {
+    return "Error generating payment link: " + response.status.toString();
+  }
+}
+
+
+export function fetchCapturedPaymentLinks(apiKey: string, apiSecret: string): string {
+  // Validate inputs
+  if (!apiKey || apiKey.trim() === "") {
+    return "Error: API key is invalid or empty.";
+  }
+  if (!apiSecret || apiSecret.trim() === "") {
+    return "Error: API secret is invalid or empty.";
+  }
+
+  // Base64 encode API key and secret
+  const authHeader = toBase64(apiKey + ":" + apiSecret);
+
+  // Define headers
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", "Basic " + authHeader);
+
+  // Define request options
+  const options = new RequestOptions();
+  options.method = "GET";
+  options.headers = headers;
+
+  // Define the Razorpay API endpoint for fetching payment links
+  const url = "https://api.razorpay.com/v1/payment_links?status=captured";
+
+  // Send the HTTP request
+  const request = new Request(url, options);
+  const response = http.fetch(request);
+
+  // Handle the response
+  if (response.ok) {
+    const responseData = response.text(); // Get response as plain text
+    return "Captured Payment Links: " + responseData;
+  } else {
+    return "Error fetching captured payment links: " + response.status.toString();
+  }
+}
+
 
 export function sendMessageToTelegram(botToken: string, chatId: string, content: string): string {
   // Validate the bot token
@@ -95,10 +294,6 @@ export function sendMessageToDiscord(webhookUrl: string, content: string): strin
     return `Error sending message: ${response.status}`;
   }
 }
-
-
-
-
 
 export function generateTextWithGemini( prompt: string): string {
   // Retrieve the Gemini Generate model
@@ -391,3 +586,33 @@ export function fetchBookDescription(key: string): DetailedBook {
 }
 
 
+function toBase64(input: string): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  let output = "";
+  let i = 0;
+
+  while (i < input.length) {
+    const c1 = input.charCodeAt(i++) & 0xff;
+    if (i === input.length) {
+      output += chars.charAt(c1 >> 2);
+      output += chars.charAt((c1 & 0x3) << 4);
+      output += "==";
+      break;
+    }
+    const c2 = input.charCodeAt(i++);
+    if (i === input.length) {
+      output += chars.charAt(c1 >> 2);
+      output += chars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xf0) >> 4));
+      output += chars.charAt((c2 & 0xf) << 2);
+      output += "=";
+      break;
+    }
+    const c3 = input.charCodeAt(i++);
+    output += chars.charAt(c1 >> 2);
+    output += chars.charAt(((c1 & 0x3) << 4) | ((c2 & 0xf0) >> 4));
+    output += chars.charAt(((c2 & 0xf) << 2) | ((c3 & 0xc0) >> 6));
+    output += chars.charAt(c3 & 0x3f);
+  }
+
+  return output;
+}

@@ -59,6 +59,14 @@
     "telegram": {
       "type": "http",
       "baseUrl": "https://api.telegram.org/"
+    },
+    "razorpay": {
+      "type": "http",
+      "baseUrl": "https://api.razorpay.com/v1/"
+    },
+    "stripe": {
+      "type": "http",
+      "baseUrl": "https://api.stripe.com/v1/"
     }
   }
 }
