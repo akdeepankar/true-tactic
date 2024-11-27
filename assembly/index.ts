@@ -240,7 +240,7 @@ class OpenLibraryResponse {
 }
 
 export function fetchOpenBook(searchTerm: string): Book[] {
-  const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=10`;
+  const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=14`;
   const request = new http.Request(url);
   const response = http.fetch(request);
 
