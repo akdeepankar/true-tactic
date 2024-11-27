@@ -1,5 +1,6 @@
 import { http, models, postgresql} from "@hypermode/modus-sdk-as";
-import {OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
+import {AssistantMessage, OpenAIChatModel, SystemMessage, UserMessage, } from "@hypermode/modus-sdk-as/models/openai/chat"
+import { GeminiGenerateInput, GeminiGenerateModel, UserTextContent } from "@hypermode/modus-sdk-as/models/gemini/generate";
 import { collections } from "@hypermode/modus-sdk-as";
 import { EmbeddingsModel } from "@hypermode/modus-sdk-as/models/experimental/embeddings";
 import { JSON } from "json-as";
@@ -8,6 +9,42 @@ import { fetch } from "@hypermode/modus-sdk-as/assembly/http";
 const bookCollection = "books";
 const searchMethod = "searchMethod1";
 const embeddingModelName = "minilm";
+
+
+
+export function generateTextWithGemini( prompt: string): string {
+  // Retrieve the Gemini Generate model
+  const model = models.getModel<GeminiGenerateModel>("gemini-1-5-pro");
+
+  // Create the user text content
+  const userContent = new UserTextContent(prompt);
+
+  // Prepare the input for the model
+  const input = model.createInput([userContent]);
+
+  // Invoke the model and get the output
+  const output = model.invoke(input);
+
+  // Check if the output has candidates and extract response content
+  if (output && output.candidates.length > 0) {
+    const firstCandidate = output.candidates[0];
+    const responseContent = firstCandidate.content; // Assuming content is an object with parts
+
+    // Check if responseContent is valid and has parts
+    if (responseContent && responseContent.parts.length > 0) {
+      return responseContent.parts[0].text.trim(); // Return the first part's text
+    } else {
+      throw new Error("No response content available.");
+    }
+  } else {
+    throw new Error("No candidates available.");
+  }
+
+  // Default return statement; this should not be reached due to the above logic
+  return "No output generated.";
+}
+
+
 
 
 export function upsertBook(
@@ -162,7 +199,7 @@ export function generateText(instruction: string, prompt: string): string {
 
   const input = model.createInput([
     new UserMessage(prompt),
-    new SystemMessage(instruction)
+    new SystemMessage(instruction),
   ]
   );
 
@@ -265,4 +302,5 @@ export function fetchBookDescription(key: string): DetailedBook {
     throw new Error(`Failed to fetch book details: ${response.status} ${response.statusText}`);
   }
 }
+
 

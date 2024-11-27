@@ -17,6 +17,11 @@
       "sourceModel": "sentence-transformers/all-MiniLM-L6-v2",
       "provider": "hugging-face",
       "connection": "hypermode"
+    },
+    "gemini-1-5-pro": {
+      "sourceModel": "gemini-1.5-pro",
+      "connection": "google",
+      "path": "v1beta/models/gemini-1.5-pro:generateContent"
     }
   },
   "collections": {
@@ -39,6 +44,13 @@
     "library-database": {
       "type": "postgresql",
       "connString": "postgresql://postgres.dpgpqoezghwbsfszbokb:hello89&598&&3@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require"
+    },
+    "google": {
+      "type": "http",
+      "baseUrl": "https://generativelanguage.googleapis.com/",
+      "headers": {
+        "X-goog-api-key": "AIzaSyAato4UGVAG5UinCXyNY-dg56cnztGgCuA"
+      }
     }
   }
 }
