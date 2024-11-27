@@ -4,11 +4,99 @@ import { GeminiGenerateInput, GeminiGenerateModel, UserTextContent } from "@hype
 import { collections } from "@hypermode/modus-sdk-as";
 import { EmbeddingsModel } from "@hypermode/modus-sdk-as/models/experimental/embeddings";
 import { JSON } from "json-as";
-import { fetch } from "@hypermode/modus-sdk-as/assembly/http";
+import { Content, fetch, Headers, Request, RequestOptions } from "@hypermode/modus-sdk-as/assembly/http";
 
 const bookCollection = "books";
 const searchMethod = "searchMethod1";
 const embeddingModelName = "minilm";
+
+
+
+export function sendMessageToTelegram(botToken: string, chatId: string, content: string): string {
+  // Validate the bot token
+  if (!botToken || botToken.trim() === "") {
+    return "Error: Bot token is invalid or empty.";
+  }
+
+  // Validate the chat ID
+  if (!chatId || chatId.trim() === "") {
+    return "Error: Chat ID is invalid or empty.";
+  }
+
+  // Validate the message content
+  if (!content || content.trim() === "") {
+    return "Error: Message content is empty.";
+  }
+
+  // Construct the Telegram API URL
+  const apiUrl = "https://api.telegram.org/bot" + botToken + "/sendMessage";
+
+  // Create a manual JSON string for the payload
+  const payload = '{ "chat_id": "' + chatId + '", "text": "' + content + '" }';
+
+  // Define headers for the request
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+
+  // Define request options
+  const options = new RequestOptions();
+  options.method = "POST";
+  options.headers = headers;
+  options.body = Content.from(payload); // Use the payload string directly
+
+  // Create the HTTP request
+  const request = new Request(apiUrl, options);
+
+  // Send the HTTP request
+  const response = http.fetch(request);
+
+  // Handle the response
+  if (response.ok) {
+    return "Message sent successfully!";
+  } else {
+    return `Error sending message: ${response.status}`;
+  }
+}
+
+export function sendMessageToDiscord(webhookUrl: string, content: string): string {
+  // Validate the webhook URL
+  if (!webhookUrl || webhookUrl.trim() === "") {
+    return "Error: Webhook URL is invalid or empty.";
+  }
+
+  // Validate the message content
+  if (!content || content.trim() === "") {
+    return "Error: Message content is empty.";
+  }
+
+  // Create a manual JSON string for the payload (AssemblyScript does not support JSON.stringify)
+  const payload = '{ "content": "' + content + '" }';
+
+  // Define headers for the request
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+
+  // Define request options
+  const options = new RequestOptions();
+  options.method = "POST";
+  options.headers = headers;
+  options.body = Content.from(payload); // Use the payload string directly
+
+  // Create the HTTP request
+  const request = new Request(webhookUrl, options);
+
+  // Send the HTTP request
+  const response = http.fetch(request);
+
+  // Handle the response
+  if (response.ok) {
+    return "Message sent successfully!";
+  } else {
+    return `Error sending message: ${response.status}`;
+  }
+}
+
+
 
 
 
@@ -43,9 +131,6 @@ export function generateTextWithGemini( prompt: string): string {
   // Default return statement; this should not be reached due to the above logic
   return "No output generated.";
 }
-
-
-
 
 export function upsertBook(
   id: string,
@@ -91,7 +176,6 @@ export function searchBooks(query: string): collections.CollectionSearchResult {
   return searchResults; // Return the search results
 }
 
-
 export function miniLMEmbed(texts: string[]): f32[][] {
   const model = models.getModel<EmbeddingsModel>(embeddingModelName);
   const input = model.createInput(texts);
@@ -116,8 +200,11 @@ export function addBookToSupabase(
   const categorydata = generateText("Reply only in a word. Which book category is the following mentioned book.", `${title} by ${author}`);
   const about = generateText("Reply only in two sentence about the genre of the book.", `${title} by ${author}`);
   const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
+  const socialMessage = generateTextWithGemini(`A new book has been added to the library: ${title} by ${author}. Write a small Interesting announcment Message. Use Emojis too.`);
 
   upsertBook(title, about, title, author, coverdata);
+  sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", socialMessage);
+  sendMessageToTelegram("7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM", "-1002263848240", socialMessage);
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();

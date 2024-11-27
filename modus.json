@@ -51,6 +51,14 @@
       "headers": {
         "X-goog-api-key": "AIzaSyAato4UGVAG5UinCXyNY-dg56cnztGgCuA"
       }
+    },
+    "discord": {
+      "type": "http",
+      "baseUrl": "https://discord.com/api/webhooks/"
+    },
+    "telegram": {
+      "type": "http",
+      "baseUrl": "https://api.telegram.org/"
     }
   }
 }
