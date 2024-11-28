@@ -130,7 +130,9 @@ export function generatePaymentLink(
       const start = shortUrlIndex + 13;
       const end = responseData.indexOf('"', start);
       const shortUrl = responseData.substring(start, end);
+      sendEmail("22f3000026@ds.study.iitm.ac.in", customerEmail, "HyperLibrary - Late Book Fee", `Dear ${customerName}, Here is Your Late Book Return Fee. ${currency} - ${amount}, Payment Link ${shortUrl}`);
       return "Payment link generated successfully: " + shortUrl;
+
     } else {
       return "Error: Failed to retrieve payment link from response.";
     }
