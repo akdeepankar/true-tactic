@@ -10,7 +10,63 @@ const bookCollection = "books";
 const searchMethod = "searchMethod1";
 const embeddingModelName = "minilm";
 
+export function sendEmail(
+  from: string,
+  to: string,
+  subject: string,
+  body: string
+): string {
+  // Validate inputs
+  if (!from || from.trim() === "") {
+    return "Error: Sender email is invalid or empty.";
+  }
+  if (!to || to.trim() === "") {
+    return "Error: Recipient email is invalid or empty.";
+  }
+  if (!subject || subject.trim() === "") {
+    return "Error: Subject is invalid or empty.";
+  }
+  if (!body || body.trim() === "") {
+    return "Error: Email body is invalid or empty.";
+  }
 
+  const apiKey = "api-0087F3D106224ED8A5E9473E2BAD52E7"
+
+  // Create the payload
+  const payload = `
+    {
+      "api_key": "${apiKey}",
+      "to": ["${to}"],
+      "sender": "${from}",
+      "subject": "${subject}",
+      "text_body": "${body}"
+    }
+  `;
+
+  // Define headers
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+
+  // Define request options
+  const options = new RequestOptions();
+  options.method = "POST";
+  options.headers = headers;
+  options.body = Content.from(payload);
+
+  // API endpoint for sending emails
+  const url = "https://api.smtp2go.com/v3/email/send";
+
+  // Create and send the HTTP request
+  const request = new Request(url, options);
+  const response = http.fetch(request);
+
+  // Handle the response
+  if (response.ok) {
+    return "Email sent successfully!";
+  } else {
+    return `Error sending email: ${response.status.toString()} ${response.statusText}`;
+  }
+}
 
 export function generatePaymentLink(
   apiKey: string,
@@ -93,7 +149,6 @@ export function generatePaymentLink(
     return "Error generating payment link: " + response.status.toString();
   }
 }
-
 
 export function fetchCapturedPaymentLinks(apiKey: string, apiSecret: string): string {
   // Validate inputs
@@ -395,7 +450,6 @@ export function deleteStudentFromSupabase(studentId: i8): string {
   // Return a success message
   return "Student deleted successfully!";
 }
-
 
 
 export function generateText(instruction: string, prompt: string): string {

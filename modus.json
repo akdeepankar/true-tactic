@@ -64,9 +64,10 @@
       "type": "http",
       "baseUrl": "https://api.razorpay.com/v1/"
     },
-    "stripe": {
+    "email": {
       "type": "http",
-      "baseUrl": "https://api.stripe.com/v1/"
+      "baseUrl": "https://api.smtp2go.com/"
     }
+
   }
 }
