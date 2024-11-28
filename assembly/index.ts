@@ -69,19 +69,11 @@ export function sendEmail(
 }
 
 export function generatePaymentLink(
-  amount: i32,
-  currency: string,
   description: string,
   customerName: string,
   customerEmail: string
 ): string {
   // Validate inputs
-  if (amount <= 0) {
-    return "Error: Payment amount must be greater than zero.";
-  }
-  if (!currency || currency.trim() === "") {
-    return "Error: Currency is invalid or empty.";
-  }
   if (!description || description.trim() === "") {
     return "Error: Description is invalid or empty.";
   }
@@ -94,6 +86,8 @@ export function generatePaymentLink(
 
   const apiKey = "rzp_test_zsKdkaX6Qk31ZO";
   const apiSecret = "94DDsae6f4oEhsFj4Nvmesk3";
+  const amount = 10;
+  const currency = "INR";
 
   // Base64 encode API key and secret
   const authHeader = toBase64(apiKey + ":" + apiSecret);
