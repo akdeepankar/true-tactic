@@ -69,8 +69,6 @@ export function sendEmail(
 }
 
 export function generatePaymentLink(
-  apiKey: string,
-  apiSecret: string,
   amount: i32,
   currency: string,
   description: string,
@@ -78,12 +76,6 @@ export function generatePaymentLink(
   customerEmail: string
 ): string {
   // Validate inputs
-  if (!apiKey || apiKey.trim() === "") {
-    return "Error: API key is invalid or empty.";
-  }
-  if (!apiSecret || apiSecret.trim() === "") {
-    return "Error: API secret is invalid or empty.";
-  }
   if (amount <= 0) {
     return "Error: Payment amount must be greater than zero.";
   }
@@ -99,6 +91,9 @@ export function generatePaymentLink(
   if (!customerEmail || customerEmail.trim() === "") {
     return "Error: Customer email is required.";
   }
+
+  const apiKey = "rzp_test_zsKdkaX6Qk31ZO";
+  const apiSecret = "94DDsae6f4oEhsFj4Nvmesk3";
 
   // Base64 encode API key and secret
   const authHeader = toBase64(apiKey + ":" + apiSecret);
