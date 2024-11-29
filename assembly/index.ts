@@ -10,6 +10,47 @@ const bookCollection = "books";
 const searchMethod = "searchMethod1";
 const embeddingModelName = "minilm";
 
+
+export function scheduledTask(telegram: bool, discord: bool, content: string): string {
+  // Validate inputs
+  if (!content || content.length === 0) {
+    return "Error: Invalid content provided.";
+  }
+
+  const discordWebhook = "https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk";
+  const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
+  const chatID = "-1002263848240";
+
+  let results: string[] = [];
+
+  if (discord) {
+    const discordResult = sendMessageToDiscord(discordWebhook, content);
+    if (discordResult) {
+      results.push("Discord: Success");
+    } else {
+      results.push("Discord: Failed");
+    }
+  }
+
+  if (telegram) {
+    const telegramResult = sendMessageToTelegram(botToken, chatID, content);
+    if (telegramResult) {
+      results.push("Telegram: Success");
+    } else {
+      results.push("Telegram: Failed");
+    }
+  }
+
+  // If no platform was selected
+  if (!telegram && !discord) {
+    return "Error: No platform selected for message delivery.";
+  }
+
+  // Return the status of the operation
+  return results.join("; ");
+}
+
+
 export function sendEmail(
   from: string,
   to: string,
@@ -346,6 +387,8 @@ export function miniLMEmbed(texts: string[]): f32[][] {
 
 const connection ="library-database"
 
+
+
 export function addBookToSupabase(
   title: string,
   author: string,
@@ -579,3 +622,4 @@ function toBase64(input: string): string {
 
   return output;
 }
+
