@@ -21,7 +21,7 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
   const chatID = "-1002263848240";
 
-  const aiContent = generateText("You are an Announcement Bot for a Library Book Club, Make an Announce for the Following Content in the prompt.", content);
+  const aiContent = generateText("You are an Announcement Bot for a Library Book Club, Make an Announce for the Following Content in the prompt. Use Emoji and Better Format.", content);
 
   let results: string[] = [];
 
