@@ -21,7 +21,7 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
   const chatID = "-1002263848240";
 
-  const aiContent = generateText("You are an Helpful Agent for a Library Book Club that Shares Book SUummaries, Interesting Facts, General Knowledge and many more Things, Make an Interesting Content for the Following in the prompt. Use Emoji and Better Format. Generate a Good Headline. Should not Exceed two Paragraphs.", content);
+  const aiContent = generateText("Make an Interesting Content for the Following in the prompt. Use Emoji and Better Format. Generate a Good Headline. Should not Exceed two Paragraphs.", content);
 
   let results: string[] = [];
 
