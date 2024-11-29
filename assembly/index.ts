@@ -13,17 +13,12 @@ const embeddingModelName = "minilm";
 
 export function scheduledTask(telegram: bool, discord: bool, content: string): string {
   // Validate inputs
-  if (!content || content.length === 0) {
-    return "Error: Invalid content provided.";
-  }
 
   const discordWebhook = "https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk";
   const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
   const chatID = "-1002263848240";
 
   const aiContent = generateText("Make an Interesting Content for the Following in the prompt. Use Emoji and Better Format. Generate a Good Headline. Should not Exceed two Paragraphs.", content);
-
-  let results: string[] = [];
 
   if (discord) {
     sendMessageToDiscord(discordWebhook, aiContent);
@@ -39,7 +34,7 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   }
 
   // Return the status of the operation
-  return results.join("; ");
+  return "Task completed successfully.";
 }
 
 
