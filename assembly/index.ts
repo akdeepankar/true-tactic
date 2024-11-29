@@ -14,17 +14,30 @@ const embeddingModelName = "minilm";
 export function scheduledTask(telegram: bool, discord: bool, content: string): string {
   // Validate inputs
 
-  const discordWebhook = "https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk";
   const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
   const chatID = "-1002263848240";
+  
+  const message = generateText("You are a Library book club expert that shares summaries, quotes and Interesting Topics to The Students. Use Emojis. Make it Interesting. Dont Make it lengthy.", content)
+  const escapedMessage = message
+  .split("\\").join("\\\\")
+  .split('"').join('\\"')
+  .split("\n").join("\\n");
 
-  const aiContent = generateText("Make an Interesting Content in a Paragraph for the Following. Use Emoji and Better Format.", content);
-  sendMessageToDiscord(discordWebhook, aiContent);
-  sendMessageToTelegram(botToken, chatID, aiContent);
+  if(telegram){
+    sendMessageToTelegram(botToken, chatID, escapedMessage);
+    if(discord){
+      sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", escapedMessage);
+    }
+  } else if(discord){
+    sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", escapedMessage);
+    if(telegram){
+      sendMessageToTelegram(botToken, chatID, escapedMessage);
+    }
+  }
 
-  // Return the status of the operation
   return "Task completed successfully.";
 }
+
 
 
 export function sendEmail(
