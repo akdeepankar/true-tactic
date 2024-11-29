@@ -21,10 +21,12 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
   const chatID = "-1002263848240";
 
+  const aiContent = generateText("You are an Announcement Bot for a Library Book Club, Make an Announce for the Following Content in the prompt.", content);
+
   let results: string[] = [];
 
   if (discord) {
-    const discordResult = sendMessageToDiscord(discordWebhook, content);
+    const discordResult = sendMessageToDiscord(discordWebhook, aiContent);
     if (discordResult) {
       results.push("Discord: Success");
     } else {
@@ -33,7 +35,7 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   }
 
   if (telegram) {
-    const telegramResult = sendMessageToTelegram(botToken, chatID, content);
+    const telegramResult = sendMessageToTelegram(botToken, chatID, aiContent);
     if (telegramResult) {
       results.push("Telegram: Success");
     } else {
