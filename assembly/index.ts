@@ -20,16 +20,14 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
 
   const aiContent = generateText("Make an Interesting Content for the Following in the prompt. Use Emoji and Better Format. Generate a Good Headline. Should not Exceed two Paragraphs.", content);
 
-  if (discord) {
+  if (discord && telegram) {
     sendMessageToDiscord(discordWebhook, aiContent);
-  }
-
-  if (telegram) {
     sendMessageToTelegram(botToken, chatID, aiContent);
-  }
-
-  // If no platform was selected
-  if (!telegram && !discord) {
+  } else if (discord) {
+    sendMessageToDiscord(discordWebhook, aiContent);
+  } else if (telegram) {
+    sendMessageToTelegram(botToken, chatID, aiContent);
+  } else {
     return "Error: No platform selected for message delivery.";
   }
 
