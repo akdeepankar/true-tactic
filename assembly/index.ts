@@ -24,16 +24,31 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   .split('"').join('\\"')
   .split("\n").join("\\n");
 
-  if(telegram){
-    sendMessageToTelegram(botToken, chatID, escapedMessage);
+
+  const escapedMessage2 = message
+    .split("\\").join("\\\\")  // Escape backslashes
+    .split('"').join('\\"')     // Escape double quotes
+    .split("\n").join("\\n")   // Escape newlines
+    .split("_").join("\\_")    // Escape underscores (for italic formatting)
+    .split("*").join("\\*")    // Escape asterisks (for bold formatting)
+    .split("`").join("\\`")    // Escape backticks (for inline code)
+    .split("[") .join("\\[")   // Escape square brackets (for links or footnotes)
+    .split("]") .join("\\]")   // Escape square brackets (for links or footnotes)
+    .split(">") .join("\\>");  // Escape angle brackets (for blockquotes)
+
+  
+
+  
+  if(telegram && discord){
+    sendMessageToTelegram(botToken, chatID, escapedMessage2);
     if(discord){
       sendMessageToDiscord(webhook, escapedMessage);
     }
-  } else if(discord){
-    sendMessageToDiscord(webhook, escapedMessage);
-    if(telegram){
-      sendMessageToTelegram(botToken, chatID, escapedMessage);
+  } else if(telegram && !discord){
+    sendMessageToTelegram(botToken, chatID, escapedMessage2);
     }
+   else if (!telegram && discord){
+     sendMessageToDiscord(webhook, escapedMessage);
   }
 
   return "Task completed successfully.";
