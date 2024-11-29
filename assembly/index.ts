@@ -26,21 +26,11 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   let results: string[] = [];
 
   if (discord) {
-    const discordResult = sendMessageToDiscord(discordWebhook, aiContent);
-    if (discordResult) {
-      results.push("Discord: Success");
-    } else {
-      results.push("Discord: Failed");
-    }
+    sendMessageToDiscord(discordWebhook, aiContent);
   }
 
   if (telegram) {
-    const telegramResult = sendMessageToTelegram(botToken, chatID, aiContent);
-    if (telegramResult) {
-      results.push("Telegram: Success");
-    } else {
-      results.push("Telegram: Failed");
-    }
+    sendMessageToTelegram(botToken, chatID, aiContent);
   }
 
   // If no platform was selected
