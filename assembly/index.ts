@@ -18,18 +18,9 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
   const chatID = "-1002263848240";
 
-
-  if (discord && telegram) {
-    const aiContent = generateText("Make an Interesting Content in a Paragraph for the Following. Use Emoji and Better Format.", content);
-    sendMessageToDiscord(discordWebhook, aiContent);
-    sendMessageToTelegram(botToken, chatID, aiContent);
-  } else if (discord) {
-    sendMessageToDiscord(discordWebhook, "aiContent");
-  } else if (telegram) {
-    sendMessageToTelegram(botToken, chatID, "aiContent");
-  } else {
-    return "Error: No platform selected for message delivery.";
-  }
+  const aiContent = generateText("Make an Interesting Content in a Paragraph for the Following. Use Emoji and Better Format.", content);
+  sendMessageToDiscord(discordWebhook, aiContent);
+  sendMessageToTelegram(botToken, chatID, aiContent);
 
   // Return the status of the operation
   return "Task completed successfully.";
