@@ -16,6 +16,7 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
 
   const botToken = "7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM";
   const chatID = "-1002263848240";
+  const webhook = "https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk"
   
   const message = generateText("You are a Library book club expert that shares summaries, quotes and Interesting Topics to The Students. Use Emojis. Make it Interesting. Dont Make it lengthy.", content)
   const escapedMessage = message
@@ -26,10 +27,10 @@ export function scheduledTask(telegram: bool, discord: bool, content: string): s
   if(telegram){
     sendMessageToTelegram(botToken, chatID, escapedMessage);
     if(discord){
-      sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", escapedMessage);
+      sendMessageToDiscord(webhook, escapedMessage);
     }
   } else if(discord){
-    sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", escapedMessage);
+    sendMessageToDiscord(webhook, escapedMessage);
     if(telegram){
       sendMessageToTelegram(botToken, chatID, escapedMessage);
     }
