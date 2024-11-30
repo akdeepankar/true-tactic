@@ -402,16 +402,25 @@ export function addBookToSupabase(
 ): string {
   
   const query = 'INSERT INTO "Books" (title, author, about, category, cover, isbn) VALUES ($1, $2, $3, $4, $5, $6)';
-  
+  const socialMessage = generateText("No fancy Intro. Just the Reply.",`A new book has been added to the library: ${title} by ${author}. Write a small Interesting announcment Message. Use Emojis too.`);
+
   const aboutdata = generateText("A Paragraph Description about this book. No Markup. Straightforward.", `${title} by ${author}`);
   const categorydata = generateText("Reply only in a word. Which book category is the following mentioned book.", `${title} by ${author}`);
   const about = generateText("Reply only in two sentence about the genre of the book.", `${title} by ${author}`);
   const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
-  const socialMessage = generateText("No fancy Intro. Just the Reply.",`A new book has been added to the library: ${title} by ${author}. Write a small Interesting announcment Message. Use Emojis too.`);
 
-  upsertBook(title, about, title, author, coverdata);
-  sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", socialMessage);
-  sendMessageToTelegram("7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM", "-1002263848240", socialMessage);
+  if (socialMessage) {
+    sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", socialMessage);
+    if (socialMessage) {
+      sendMessageToTelegram("7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM", "-1002263848240", socialMessage);
+      if (title && author && about && categorydata && coverdata) {
+        upsertBook(title, about, title, author, coverdata);
+    }
+  }}
+
+  //upsertBook(title, about, title, author, coverdata);
+  //sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", socialMessage);
+  //sendMessageToTelegram("7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM", "-1002263848240", socialMessage);
 
   // Create a Params object to hold query parameters
   const params = new postgresql.Params();
