@@ -409,10 +409,15 @@ export function addBookToSupabase(
   const about = generateText("Reply only in two sentence about the genre of the book.", `${title} by ${author}`);
   const coverdata = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
 
+  const escapedMessage = socialMessage
+  .split("\\").join("\\\\")
+  .split('"').join('\\"')
+  .split("\n").join("\\n");
+
   if (socialMessage) {
-    sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", socialMessage);
+    sendMessageToDiscord("https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk", escapedMessage);
     if (socialMessage) {
-      sendMessageToTelegram("7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM", "-1002263848240", socialMessage);
+      sendMessageToTelegram("7314816989:AAHdryk--Gc4goFZsVz51038BE4OJ9IXKVM", "-1002263848240", escapedMessage);
       if (title && author && about && categorydata && coverdata) {
         upsertBook(title, about, title, author, coverdata);
     }
