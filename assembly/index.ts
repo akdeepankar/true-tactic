@@ -14,7 +14,7 @@ const embeddingModelName = "minilm";
 export function scheduledTask(telegram: bool, discord: bool, content: string): string {
   // Validate inputs
 
-  const botToken = ${{ secrets.TELEGRAM_BOT_TOKEN }};
+  const botToken = `${{ secrets.TELEGRAM_BOT_TOKEN }}`;
   const chatID = "-1002263848240";
   const webhook = "https://discord.com/api/webhooks/1311396551360385056/ZJ790gzwAef6_D0qWe5pCpovtE6Bb563khD-1P0pRZyIwhzMjsJw53wF9N58xrtDQUYk"
   
