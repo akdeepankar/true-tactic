@@ -106,7 +106,6 @@ export function sendEmail(
   const request = new Request(url, options);
   const response = http.fetch(request);
 
-  // Handle the response
   if (response.ok) {
     return "Email sent successfully!";
   } else {
